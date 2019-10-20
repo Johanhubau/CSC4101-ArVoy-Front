@@ -1,0 +1,132 @@
+<template>
+  <div>
+    <h1>Edit {{ item && item['@id'] }}</h1>
+
+    <div
+      v-if="created"
+      class="alert alert-success"
+      role="status">{{ created['@id'] }} created.</div>
+    <div
+      v-if="updated"
+      class="alert alert-success"
+      role="status">{{ updated['@id'] }} updated.</div>
+    <div
+      v-if="isLoading || deleteLoading"
+      class="alert alert-info"
+      role="status">Loading...</div>
+    <div
+      v-if="error"
+      class="alert alert-danger"
+      role="alert">
+      <span
+        class="fa fa-exclamation-triangle"
+        aria-hidden="true" /> {{ error }}
+    </div>
+    <div
+      v-if="deleteError"
+      class="alert alert-danger"
+      role="alert">
+      <span
+        class="fa fa-exclamation-triangle"
+        aria-hidden="true" /> {{ deleteError }}
+    </div>
+
+    <ReservationForm
+      v-if="item"
+      :handle-submit="onSendForm"
+      :handle-update-field="updateField"
+      :values="item"
+      :errors="violations"
+      :initial-values="retrieved" />
+
+    <router-link
+      v-if="item"
+      :to="{ name: 'ReservationList' }"
+      class="btn btn-default">Back to list</router-link>
+    <button
+      class="btn btn-danger"
+      @click="del">Delete</button>
+  </div>
+</template>
+
+<script>
+import { mapActions, mapGetters } from 'vuex'
+import ReservationForm from './Form.vue'
+
+export default {
+  components: {
+    ReservationForm
+  },
+
+  data () {
+    return {
+      item: {}
+    }
+  },
+
+  computed: {
+    ...mapGetters({
+      isLoading: 'reservation/update/isLoading',
+      error: 'reservation/update/error',
+      deleteError: 'reservation/del/error',
+      deleteLoading: 'reservation/del/isLoading',
+      created: 'reservation/create/created',
+      deleted: 'reservation/del/deleted',
+      retrieved: 'reservation/update/retrieved',
+      updated: 'reservation/update/updated',
+      violations: 'reservation/update/violations'
+    })
+  },
+
+  watch: {
+    // eslint-disable-next-line object-shorthand,func-names
+    deleted: function (deleted) {
+      if (!deleted) {
+        return
+      }
+
+      this.$router.push({ name: 'ReservationList' })
+    }
+  },
+
+  beforeDestroy () {
+    this.reset()
+  },
+
+  created () {
+    this.retrieve(decodeURIComponent(this.$route.params.id))
+  },
+
+  methods: {
+    ...mapActions({
+      createReset: 'reservation/create/reset',
+      deleteItem: 'reservation/del/del',
+      delReset: 'reservation/del/reset',
+      retrieve: 'reservation/update/retrieve',
+      updateReset: 'reservation/update/reset',
+      update: 'reservation/update/update',
+      updateRetrieved: 'reservation/update/updateRetrieved'
+    }),
+
+    del () {
+      if (window.confirm('Are you sure you want to delete this reservation ?')) {
+        this.deleteItem(this.retrieved)
+      }
+    },
+
+    reset () {
+      this.updateReset()
+      this.delReset()
+      this.createReset()
+    },
+
+    onSendForm () {
+      this.update()
+    },
+
+    updateField (field, value) {
+      this.updateRetrieved({ [field]: value })
+    }
+  }
+}
+</script>

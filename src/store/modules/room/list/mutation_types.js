@@ -1,0 +1,5 @@
+export const RESET = 'ROOM_LIST_RESET'
+export const SET_ITEMS = 'ROOM_LIST_SET_ITEMS'
+export const SET_ERROR = 'ROOM_LIST_SET_ERROR'
+export const SET_VIEW = 'ROOM_LIST_SET_VIEW'
+export const TOGGLE_LOADING = 'ROOM_LIST_TOGGLE_LOADING'
