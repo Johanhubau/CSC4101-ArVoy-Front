@@ -31,7 +31,7 @@ Vue.config.productionTip = false;
 Vue.use(Vuex);
 Vue.use(VueRouter);
 
-const baseRoutes = []
+const baseRoutes = [];
 const routes = baseRoutes.concat(clientRoutes, reservationRoutes, commentRoutes, roomRoutes, regionRoutes, staffRoutes, userRoutes, ownerRoutes, unavailableperiodRoutes);
 const router = new VueRouter({
   mode: 'history',
@@ -41,17 +41,21 @@ const router = new VueRouter({
 export const store = new Vuex.Store({
   modules: {
     client,
-	reservation,
-	comment,
-	room,
-	region,
-	staff,
-	user,
-	owner,
-	unavailableperiod
+	  reservation,
+	  comment,
+	  room,
+	  region,
+	  staff,
+	  user,
+	  owner,
+	  unavailableperiod
   }
 });
 
+
+// Components
+Vue.component('template-header', require('./components/templates/header').default);
+Vue.component('template-footer', require('./components/templates/footer').default);
 
 
 new Vue({
