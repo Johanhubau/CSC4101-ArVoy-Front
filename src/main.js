@@ -13,6 +13,7 @@ import staffRoutes from './router/staff';
 import userRoutes from './router/user';
 import ownerRoutes from './router/owner';
 import unavailableperiodRoutes from './router/unavailableperiod';
+import mainRoutes from './router/main';
 
 import '../src/assets/css/app.scss';
 //import 'font-awesome/css/font-awesome.css';
@@ -32,7 +33,7 @@ Vue.use(Vuex);
 Vue.use(VueRouter);
 
 const baseRoutes = [];
-const routes = baseRoutes.concat(clientRoutes, reservationRoutes, commentRoutes, roomRoutes, regionRoutes, staffRoutes, userRoutes, ownerRoutes, unavailableperiodRoutes);
+const routes = baseRoutes.concat(clientRoutes, reservationRoutes, commentRoutes, roomRoutes, regionRoutes, staffRoutes, userRoutes, ownerRoutes, unavailableperiodRoutes, mainRoutes);
 const router = new VueRouter({
   mode: 'history',
   routes: routes
