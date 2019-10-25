@@ -28,7 +28,6 @@ import unavailableperiod from './store/modules/unavailableperiod/';
 
 import '../src/assets/css/app.scss';
 import '../src/assets/js/bootstrap.bundle'
-//import 'font-awesome/css/font-awesome.css';
 
 Vue.config.productionTip = false;
 
