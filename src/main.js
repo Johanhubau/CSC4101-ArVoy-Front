@@ -14,9 +14,8 @@ import userRoutes from './router/user';
 import ownerRoutes from './router/owner';
 import unavailableperiodRoutes from './router/unavailableperiod';
 import mainRoutes from './router/main';
+import adminRoutes from './router/admin';
 
-import '../src/assets/css/app.scss';
-//import 'font-awesome/css/font-awesome.css';
 import client from './store/modules/client/';
 import reservation from './store/modules/reservation/';
 import comment from './store/modules/comment/';
@@ -27,13 +26,17 @@ import user from './store/modules/user/';
 import owner from './store/modules/owner/';
 import unavailableperiod from './store/modules/unavailableperiod/';
 
+import '../src/assets/css/app.scss';
+import '../src/assets/js/bootstrap.bundle'
+//import 'font-awesome/css/font-awesome.css';
+
 Vue.config.productionTip = false;
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
 
 const baseRoutes = [];
-const routes = baseRoutes.concat(clientRoutes, reservationRoutes, commentRoutes, roomRoutes, regionRoutes, staffRoutes, userRoutes, ownerRoutes, unavailableperiodRoutes, mainRoutes);
+const routes = baseRoutes.concat(clientRoutes, reservationRoutes, commentRoutes, roomRoutes, regionRoutes, staffRoutes, userRoutes, ownerRoutes, unavailableperiodRoutes, mainRoutes, adminRoutes);
 const router = new VueRouter({
   mode: 'history',
   routes: routes
@@ -57,6 +60,8 @@ export const store = new Vuex.Store({
 // Components
 Vue.component('template-header', require('./components/templates/header').default);
 Vue.component('template-footer', require('./components/templates/footer').default);
+Vue.component('admin-template-header', require('./components/templates/adminHeader').default);
+Vue.component('admin-template-footer', require('./components/templates/adminFooter').default);
 
 
 new Vue({
