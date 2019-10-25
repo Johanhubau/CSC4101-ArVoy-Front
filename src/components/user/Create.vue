@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container pt-5">
     <h1>New User</h1>
 
     <div
@@ -19,11 +19,9 @@
       :handle-submit="onSendForm"
       :handle-update-field="updateField"
       :values="item"
-      :errors="violations" />
-
-    <router-link
-      :to="{ name: 'UserList' }"
-      class="btn btn-default">Back to list</router-link>
+      :errors="violations"
+      :routerTo="{ name: 'UserList' }"
+      :routerText="'Back to list'"/>
   </div>
 </template>
 
