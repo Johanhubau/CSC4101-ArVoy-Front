@@ -14,7 +14,7 @@ import userRoutes from './router/user';
 import ownerRoutes from './router/owner';
 import unavailableperiodRoutes from './router/unavailableperiod';
 
-import 'bootstrap/dist/css/bootstrap.css';
+import '../src/assets/css/app.scss';
 //import 'font-awesome/css/font-awesome.css';
 import client from './store/modules/client/';
 import reservation from './store/modules/reservation/';
