@@ -18,8 +18,8 @@
               <router-link class="dropdown-item" to="/admin/regions">Regions</router-link>
               <router-link class="dropdown-item" to="/admin/reservations">Reservations</router-link>
               <router-link class="dropdown-item" to="/admin/rooms">Rooms</router-link>
-              <router-link class="dropdown-item" to="/admin/staffs">Staffs</router-link>
-              <router-link class="dropdown-item" to="/admin/unavailableperiods">Unavailable Periods</router-link>
+              <router-link class="dropdown-item" to="/admin/staff">Staff</router-link>
+              <router-link class="dropdown-item" to="/admin/unavailable_periods">Unavailable Periods</router-link>
               <router-link class="dropdown-item" to="/admin/users">Users</router-link>
             </div>
           </li>
