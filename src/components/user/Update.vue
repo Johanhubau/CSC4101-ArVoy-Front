@@ -42,10 +42,6 @@
       :routerTo="{ name: 'UserList' }"
       :routerText="'Back To list'"/>
 
-    <button
-      class="btn btn-danger"
-      @click="del">Delete</button>
-
   </div>
 </template>
 
@@ -107,12 +103,6 @@ export default {
       update: 'user/update/update',
       updateRetrieved: 'user/update/updateRetrieved'
     }),
-
-    del () {
-      if (window.confirm('Are you sure you want to delete this user ?')) {
-        this.deleteItem(this.retrieved)
-      }
-    },
 
     reset () {
       this.updateReset()
