@@ -4,8 +4,8 @@ import RegionUpdate from '../components/region/Update'
 import RegionShow from '../components/region/Show'
 
 export default [
-  { name: 'RegionList', path: '/regions/', component: RegionList },
-  { name: 'RegionCreate', path: '/regions/create', component: RegionCreate },
-  { name: 'RegionUpdate', path: '/regions/edit/:id', component: RegionUpdate },
-  { name: 'RegionShow', path: '/regions/show/:id', component: RegionShow }
+  { name: 'RegionList', path: '/admin/regions/', component: RegionList },
+  { name: 'RegionCreate', path: '/admin/regions/create', component: RegionCreate },
+  { name: 'RegionUpdate', path: '/admin/regions/edit/:id', component: RegionUpdate },
+  { name: 'RegionShow', path: '/admin/regions/show/:id', component: RegionShow }
 ]
