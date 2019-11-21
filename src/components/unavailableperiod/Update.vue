@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container pt-5">
     <h1>Edit {{ item && item['@id'] }}</h1>
 
     <div
@@ -10,10 +10,12 @@
       v-if="updated"
       class="alert alert-success"
       role="status">{{ updated['@id'] }} updated.</div>
-    <div
-      v-if="isLoading || deleteLoading"
-      class="alert alert-info"
-      role="status">Loading...</div>
+    <div v-if="isLoading || deleteLoading">
+      <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar"
+             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+      </div>
+    </div>
     <div
       v-if="error"
       class="alert alert-danger"
@@ -37,15 +39,10 @@
       :handle-update-field="updateField"
       :values="item"
       :errors="violations"
-      :initial-values="retrieved" />
+      :initial-values="retrieved"
+      :routerTo="{ name: 'UnavailablePeriodList' }"
+      :routerText="'Back to list'" />
 
-    <router-link
-      v-if="item"
-      :to="{ name: 'UnavailablePeriodList' }"
-      class="btn btn-default">Back to list</router-link>
-    <button
-      class="btn btn-danger"
-      @click="del">Delete</button>
   </div>
 </template>
 
@@ -107,12 +104,6 @@ export default {
       update: 'unavailableperiod/update/update',
       updateRetrieved: 'unavailableperiod/update/updateRetrieved'
     }),
-
-    del () {
-      if (window.confirm('Are you sure you want to delete this unavailableperiod ?')) {
-        this.deleteItem(this.retrieved)
-      }
-    },
 
     reset () {
       this.updateReset()

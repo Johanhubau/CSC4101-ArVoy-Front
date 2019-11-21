@@ -13,8 +13,7 @@
         @input="handleUpdateField('email', $event.target.value)">
       <div
         v-if="isInvalid('email')"
-        class="invalid-feedback">{{ violations.email }}
-      </div>
+        class="invalid-feedback">{{ violations.email }}</div>
     </div>
     <div class="form-group">
       <label
@@ -29,8 +28,7 @@
         @input="handleUpdateField('roles', $event.target.value)">
       <div
         v-if="isInvalid('roles')"
-        class="invalid-feedback">{{ violations.roles }}
-      </div>
+        class="invalid-feedback">{{ violations.roles }}</div>
     </div>
     <div class="form-group">
       <label
@@ -45,8 +43,7 @@
         @input="handleUpdateField('password', $event.target.value)">
       <div
         v-if="isInvalid('password')"
-        class="invalid-feedback">{{ violations.password }}
-      </div>
+        class="invalid-feedback">{{ violations.password }}</div>
     </div>
     <div class="form-group">
       <label
@@ -61,8 +58,7 @@
         @input="handleUpdateField('emailVerified', $event.target.value)">
       <div
         v-if="isInvalid('emailVerified')"
-        class="invalid-feedback">{{ violations.emailVerified }}
-      </div>
+        class="invalid-feedback">{{ violations.emailVerified }}</div>
     </div>
     <div class="form-group">
       <label
@@ -77,8 +73,7 @@
         @input="handleUpdateField('owner', $event.target.value)">
       <div
         v-if="isInvalid('owner')"
-        class="invalid-feedback">{{ violations.owner }}
-      </div>
+        class="invalid-feedback">{{ violations.owner }}</div>
     </div>
     <div class="form-group">
       <label
@@ -93,8 +88,7 @@
         @input="handleUpdateField('staff', $event.target.value)">
       <div
         v-if="isInvalid('staff')"
-        class="invalid-feedback">{{ violations.staff }}
-      </div>
+        class="invalid-feedback">{{ violations.staff }}</div>
     </div>
     <div class="form-group">
       <label
@@ -109,14 +103,12 @@
         @input="handleUpdateField('client', $event.target.value)">
       <div
         v-if="isInvalid('client')"
-        class="invalid-feedback">{{ violations.client }}
-      </div>
+        class="invalid-feedback">{{ violations.client }}</div>
     </div>
 
     <button
       type="submit"
-      class="btn btn-success">Submit
-    </button>
+      class="btn btn-success">Submit</button>
     <router-link
       :to="routerTo"
       class="btn btn-default">{{routerText}}
@@ -125,62 +117,59 @@
 </template>
 
 <script>
-    export default {
-        props: {
-            handleSubmit: {
-                type: Function,
-                required: true
-            },
+export default {
+  props: {
+    handleSubmit: {
+      type: Function,
+      required: true
+    },
 
-            handleUpdateField: {
-                type: Function,
-                required: true
-            },
+    handleUpdateField: {
+      type: Function,
+      required: true
+    },
 
-            values: {
-                type: Object,
-                required: true
-            },
+    values: {
+      type: Object,
+      required: true
+    },
 
-            errors: {
-                type: Object,
-                default: () => {
-                }
-            },
+    errors: {
+      type: Object,
+      default: () => {}
+    },
 
-            initialValues: {
-                type: Object,
-                default: () => {
-                }
-            },
+    initialValues: {
+      type: Object,
+      default: () => {}
+    },
 
-            routerTo: {
-                type: Object,
-                default: () =>"{ name: 'UserList' }"
-            },
+      routerTo: {
+          type: Object,
+          default: () =>"{ name: 'UserList' }"
+      },
 
-            routerText: {
-                type: String,
-                default: "Back to Index"
-            }
+      routerText: {
+          type: String,
+          default: "Back to Index"
+      }
+  },
 
-        },
+  computed: {
+    // eslint-disable-next-line
+    item () {
+      return this.initialValues || this.values
+    },
 
-        computed: {
-            // eslint-disable-next-line
-            item() {
-                return this.initialValues || this.values
-            },
-
-            violations() {
-                return this.errors || {}
-            }
-        },
-
-        methods: {
-            isInvalid(key) {
-                return Object.keys(this.violations).length > 0 && this.violations[key]
-            }
-        }
+    violations () {
+      return this.errors || {}
     }
+  },
+
+  methods: {
+    isInvalid (key) {
+      return Object.keys(this.violations).length > 0 && this.violations[key]
+    }
+  }
+}
 </script>

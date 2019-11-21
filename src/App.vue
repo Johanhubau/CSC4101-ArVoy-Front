@@ -14,7 +14,7 @@
     export default {
         data() {
             return {
-                userType: 'user' //This should be handled by some model or any other way
+                userType: 'admin' //This should be handled by some model or any other way
             }
         },
     }

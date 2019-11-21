@@ -139,6 +139,10 @@
     <button
       type="submit"
       class="btn btn-success">Submit</button>
+    <router-link
+      :to="routerTo"
+      class="btn btn-default">{{routerText}}
+    </router-link>
   </form>
 </template>
 
@@ -168,7 +172,17 @@ export default {
     initialValues: {
       type: Object,
       default: () => {}
-    }
+    },
+
+      routerTo: {
+          type: Object,
+          default: () =>"{ name: 'UserList' }"
+      },
+
+      routerText: {
+          type: String,
+          default: "Back to Index"
+      }
   },
 
   computed: {
