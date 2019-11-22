@@ -1,0 +1,183 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col px-0">
+        <button type="button" class="btn btn-secondary btn-block px-0" @click="ToRegion()">Choose a Region</button>
+      </div>
+      <div class="col px-0">
+        <button type="button" class="btn btn-secondary btn-block px-0" :class="{ disabled: currentStep < 2 }"
+                :disabled="currentStep < 2" @click="ToRoom()">Choose a Room
+        </button>
+      </div>
+      <div class="col px-0">
+        <button type="button" class="btn btn-secondary btn-block px-0" :class="{ disabled: currentStep < 3 }"
+                :disabled="currentStep < 3" @click="ToInfo()">Tell us about you
+        </button>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row pb-5">
+        <div v-if="regionLoading || roomLoading" class="w-100">
+          <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar"
+                 aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div v-if="currentStep === 1" class="w-100">
+          <h3>
+            Ready? Let's start by choosing a region.
+          </h3>
+          <div class="row" v-for='(gregions, gIndex) in groupedRegions'>
+            <div v-for="region in gregions" class="col-lg px-1">
+              <div class="card mb-3">
+                <h3 class="card-header">{{region.title}}</h3>
+                <img style="height: 200px; width: 100%; display: block;" src="" alt="Card image">
+                <div class="card-body">
+                  <p class="card-text">{{region.summary}}</p>
+                  <button class="btn btn-secondary" @click="ToRoom(region.id)">Choose</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="currentStep === 2" class="w-100">
+          <h3>
+            Great choice! Now choose a Room. We're sure you'll find something to your liking
+          </h3>
+          <div class="row" v-for='(grooms, gIndex) in groupedRooms'>
+            <div v-for="room in grooms" class="col-lg px-1">
+              <div class="card mb-3">
+                <h3 class="card-header">{{room.title}}</h3>
+                <img style="height: 200px; width: 100%; display: block;" src="" alt="Card image">
+                <div class="card-body">
+                  <p class="card-text">{{room.summary}}</p>
+                  <p class="card-text">{{room.surface}}</p>
+                  <button class="btn btn-secondary" @click="ToInfo(room.id)">Choose</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="currentStep === 3" class="w-100">
+          <h3>
+            Now tell us about you and we're good to go!
+          </h3>
+          <form>
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input type="text" class="form-control" id="firstName" placeholder="Enter First name" v-model="firstName">
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input type="text" class="form-control" id="lastName" placeholder="Enter Last name" v-model="lastName">
+            </div>
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email"
+                     v-model="email">
+              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+              <label for="Occupants">How many will be staying?</label>
+              <select class="form-control" id="occupants" aria-describedby="occupantHelp" v-model="occupants">
+                <option v-for="n in rooms.find(room => {return room.id === this.chosenRoom}).capacity">{{ n }}</option>
+              </select>
+              <small id="occupantHelp" class="form-text text-muted">(You included)</small>
+            </div>
+            <button class="btn btn-primary" @click="submit()">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+    export default {
+        name: "index",
+        data() {
+            return {
+                currentStep: 1,
+                //Data
+                regions: [
+                    {id: 1, title: "Ile de France", summary: "Region de merde"},
+                    {id: 2, title: "Bordeaux", summary: "Du vin fraté"},
+                    {id: 3, title: "Bretagne", summary: "De l'eau du ciel"},
+                    {id: 4, title: "Espagne", summary: "Hola!"}
+                ],
+                groupedRegions: [],
+                rooms: [
+                    {id: 1, title: "Chambre 1", summary: "Region de merde", surface: "42", capacity: 2},
+                    {id: 2, title: "Chambre 2", summary: "Du vin fraté", surface: "42", capacity: 3},
+                    {id: 3, title: "Chambre 3", summary: "De l'eau du ciel", surface: "42", capacity: 4},
+                    {id: 4, title: "Chambre 4", summary: "Hola!", surface: "42", capacity: 5}
+                ],
+                groupedRooms: [],
+                //Form Data
+                chosenRegion: -1,
+                chosenRoom: -1,
+                firstName: "",
+                lastName: "",
+                email: "",
+                occupants: 0,
+                //ToolData
+                regionLoading: 0,
+                roomLoading: 0,
+            }
+        },
+
+        mounted() {
+            var _self = this;
+            // divide into n groups
+            this.groupedRegions = _self.chunk(this.regions, 3);
+            this.groupedRooms = _self.chunk(this.rooms, 3)
+        },
+        methods: {
+            chunk: function (arr, size) {
+                var newArr = [];
+                for (var i = 0; i < arr.length; i += size) {
+                    newArr.push(arr.slice(i, i + size));
+                }
+                return newArr;
+            },
+            ToRegion() {
+                this.chosenRegion = -1;
+                this.chosenRoom = -1;
+                this.resetForm();
+                this.currentStep = 1;
+                this.regionLoading = 1;
+                //Load rooms
+                this.regionLoading = 0;
+            },
+            ToRoom(regionId) {
+                if (typeof regionId != "undefined") {
+                    this.chosenRegion = regionId;
+                }
+                this.chosenRoom = -1;
+                this.resetForm();
+                this.currentStep = 2;
+                this.roomLoading = 1;
+                //Load rooms
+                this.roomLoading = 0;
+            },
+            ToInfo(roomId) {
+                if (typeof roomId != "undefined") {
+                    this.chosenRoom = roomId;
+                }
+                this.currentStep = 3;
+                this.resetForm();
+            },
+            resetForm() {
+                this.firstName = "";
+                this.lastName = "";
+                this.email = "";
+                this.occupants = 0;
+            },
+            submit() {
+
+            },
+        }
+    }
+</script>

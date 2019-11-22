@@ -15,6 +15,7 @@ import ownerRoutes from './router/owner';
 import unavailableperiodRoutes from './router/unavailableperiod';
 import mainRoutes from './router/main';
 import adminRoutes from './router/admin';
+import clientreservationRoutes from "./router/clientreservation";
 
 import client from './store/modules/client/';
 import reservation from './store/modules/reservation/';
@@ -35,7 +36,7 @@ Vue.use(Vuex);
 Vue.use(VueRouter);
 
 const baseRoutes = [];
-const routes = baseRoutes.concat(clientRoutes, reservationRoutes, commentRoutes, roomRoutes, regionRoutes, staffRoutes, userRoutes, ownerRoutes, unavailableperiodRoutes, mainRoutes, adminRoutes);
+const routes = baseRoutes.concat(clientRoutes, reservationRoutes, commentRoutes, roomRoutes, regionRoutes, staffRoutes, userRoutes, ownerRoutes, unavailableperiodRoutes, clientreservationRoutes, mainRoutes, adminRoutes);
 const router = new VueRouter({
   mode: 'history',
   routes: routes

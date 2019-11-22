@@ -1,12 +1,16 @@
 <template>
-  <div class="container-fluid p-0">
-    <div class="parallax"></div>
-    <div class="container">
-      <h1 class="pt-3" style="font-size: 4em;">
-        RVoy
-        <small class="text-muted">An escape into the World!</small>
-      </h1>
-      <div class="row">
+  <div>
+    <div class="container-fluid p-0 min-vh-100">
+      <div class="parallax"></div>
+      <div class="container">
+        <h1 class="py-5" style="font-size: 4em;">
+          RVoy
+          <small class="text-muted">An escape into the World!</small>
+        </h1>
+      </div>
+    </div>
+    <div class="container p-0 vh-100">
+      <div class="row h-100 align-items-center">
         <div class="col-lg">
           <h3>Choose</h3>
           <p>With our simple design, you'll find many opportunities and homes that we're sure you'll love</p>
@@ -30,7 +34,7 @@
     background-image: url("../assets/img/landing.jpg");
 
     /* Full height */
-    height: 500px;
+    height: 67%;
 
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
