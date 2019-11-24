@@ -1,11 +1,11 @@
 import fetch from '../../../../utils/fetch'
 import * as types from './mutation_types'
 
-const getItems = ({ commit }, page = 'rooms') => {
+const getItems = ({ commit }, filters = [], page = 'rooms') => {
   commit(types.TOGGLE_LOADING)
 
   return new Promise((resolve, reject) => {
-    fetch(page)
+    fetch(page, { filters: filters })
       .then(response => response.json())
       .then((data) => {
         commit(types.TOGGLE_LOADING)

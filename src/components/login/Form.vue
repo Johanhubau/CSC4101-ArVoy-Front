@@ -1,58 +1,64 @@
 <template>
-  <div>
-    <div class="row col">
-      <h1>Login</h1>
-    </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h5 class="card-title text-center">Sign In</h5>
+            <form class="form-signin" v-on:submit.prevent>
+              <div class="form-label-group">
+                <input
+                  v-model="login"
+                  type="email"
+                  class="form-control"
+                  id="inputEmail"
+                required autofocus>
+                <label for="inputEmail">Email address</label>
+              </div>
 
-    <div class="row col">
-      <form>
-        <div class="form-row">
-          <div class="col-4">
-            <input
-              v-model="login"
-              type="text"
-              class="form-control"
-            >
-          </div>
-          <div class="col-4">
-            <input
-              v-model="password"
-              type="password"
-              class="form-control"
-            >
-          </div>
-          <div class="col-4">
-            <button
-              :disabled="login.length === 0 || password.length === 0 || isLoading"
-              type="button"
-              class="btn btn-primary"
-              @click="performLogin()"
-            >
-              Login
-            </button>
+              <div class="form-label-group">
+                <input
+                  v-model="password"
+                  type="password"
+                  class="form-control"
+                  id="inputPassword"
+                  required>
+                <label for="inputPassword">Password</label>
+              </div>
+
+              <button
+                :disabled="login.length === 0 || password.length === 0 || isLoading"
+                type="submit"
+                class="btn btn-lg btn-primary btn-block text-uppercase"
+                @click="performLogin()"
+                @submit=""
+              >Sign in</button>
+            </form>
           </div>
         </div>
-      </form>
-    </div>
-
-    <div
-      v-if="isLoading"
-      class="row col"
-    >
-      <p>Loading...</p>
-    </div>
-
-    <div
-      v-else-if="hasError"
-      class="row col"
-    >
-      <div
-        class="alert alert-danger"
-        role="alert"
-      >
-        {{ error }}
+        <div
+          v-if="isLoading"
+        >
+          <div
+            class="alert alert-primary"
+            role="alert"
+          >
+            Loading...
+          </div>
+        </div>
+        <div
+          v-else-if="hasError"
+        >
+          <div
+            class="alert alert-danger"
+            role="alert"
+          >
+            {{ error }}
+          </div>
+        </div>
       </div>
     </div>
+
   </div>
 </template>
 

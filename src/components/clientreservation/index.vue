@@ -188,7 +188,7 @@
                     this.chosenRegion = regionId;
                 }
                 let that = this;
-                this.$store.dispatch('room/list/default').then(() => {
+                this.$store.dispatch('room/list/default', { regions: this.chosenRegion }).then(() => {
                     that.groupedRooms = that.chunk(that.rooms, 3);
                 });
                 this.chosenRoom = -1;

@@ -10,11 +10,29 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/reserve">Make a reservation</router-link>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="!isAuthenticated">
             <router-link class="nav-link" to="/login">Connect</router-link>
           </li>
         </ul>
+        <span class="navbar-text" v-if="isAuthenticated">Connected as {{ getDisplayName }}</span>
       </div>
     </nav>
   </div>
 </template>
+
+<script>
+    export default {
+        name: "App",
+        computed: {
+            getDisplayName() {
+                return this.$store.getters["security/hasInformation"] && this.$store.getters["security/getDisplayName"];
+            },
+            isAuthenticated() {
+                return this.$store.getters["security/isAuthenticated"]
+            },
+            isAdmin() {
+                return this.$store.getters["security/isAuthenticated"] && this.$store.getters["security/hasRole"]("ROLE_SUPERADMIN");
+            }
+        },
+    }
+</script>

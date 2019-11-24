@@ -16,7 +16,9 @@ export default function (id, options = {}) {
   options.credentials = 'include';
   if (!("redirect401" in options)) options.redirect401 = true;
   const entryPoint = ENTRYPOINT + (ENTRYPOINT.endsWith('/') ? '' : '/');
-  return fetch(new URL(id, entryPoint), options).then((response) => {
+  let url = new URL(id, entryPoint);
+  if ("filters" in options) Object.keys(options.filters).forEach(key => url.searchParams.append(key, options.filters[key]));
+  return fetch(url, options).then((response) => {
     if (response.ok) return response;
 
     if (response.status === 401 && options.redirect401) throw new UnauthorizedError();
@@ -24,7 +26,7 @@ export default function (id, options = {}) {
     return response
       .json()
       .then((json) => {
-        const error = json['hydra:description'] ? json['hydra:description'] : response.statusText
+        const error = json ? json : response.statusText
         if (!json.violations) throw Error(error)
 
         const errors = { _error: error }

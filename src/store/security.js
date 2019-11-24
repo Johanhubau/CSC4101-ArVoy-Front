@@ -30,6 +30,12 @@ export default {
     isInitiated(state) {
       return state.isInitiated;
     },
+    hasInformation(state) {
+      return state.user !== undefined && state.user !== null;
+    },
+    getDisplayName(state) {
+      return state.user.displayName;
+    },
     hasRole(state) {
       return role => {
         return state.user.roles.indexOf(role) !== -1;

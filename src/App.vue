@@ -21,7 +21,7 @@
                 return this.$store.getters["security/isAuthenticated"]
             },
             isAdmin() {
-                return this.$store.getters["security/isAuthenticated"] && this.$store.getters["security/hasRole"]("ROLE_SUPERADMIN");
+                return this.$store.getters["security/hasInformation"] && this.$store.getters["security/hasRole"]("ROLE_SUPERADMIN");
             }
         },
         async created() {
