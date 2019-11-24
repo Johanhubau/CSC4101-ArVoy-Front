@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex';
 import VueRouter from 'vue-router';
+import SecurityModule from "./store/security";
 import App from './App.vue';
+import SecurityAPI from "./api/security";
 
 //import routes
 import clientRoutes from './router/client';
@@ -16,6 +18,7 @@ import unavailableperiodRoutes from './router/unavailableperiod';
 import mainRoutes from './router/main';
 import adminRoutes from './router/admin';
 import clientreservationRoutes from "./router/clientreservation";
+import Login from "./components/login/Form";
 
 import client from './store/modules/client/';
 import reservation from './store/modules/reservation/';
@@ -26,6 +29,7 @@ import staff from './store/modules/staff/';
 import user from './store/modules/user/';
 import owner from './store/modules/owner/';
 import unavailableperiod from './store/modules/unavailableperiod/';
+import NeedsLoginError from "./error/NeedsLoginError";
 
 import '../src/assets/css/app.scss';
 import '../src/assets/js/bootstrap.bundle'
@@ -35,15 +39,43 @@ Vue.config.productionTip = false;
 Vue.use(Vuex);
 Vue.use(VueRouter);
 
-const baseRoutes = [];
+const baseRoutes = [{ path: "/login", component: Login }];
 const routes = baseRoutes.concat(clientRoutes, reservationRoutes, commentRoutes, roomRoutes, regionRoutes, staffRoutes, userRoutes, ownerRoutes, unavailableperiodRoutes, clientreservationRoutes, mainRoutes, adminRoutes);
 const router = new VueRouter({
   mode: 'history',
   routes: routes
 });
 
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!store.getters["security/isInitiated"]) {
+      try {
+        store.dispatch("security/onRefresh", await SecurityAPI.checkLogin());
+      } catch (e) {
+        console.log(from);
+        if (e instanceof NeedsLoginError && from.path !== "/login") await router.push({path: "/login"});
+      }
+    }
+    if (store.getters["security/isAuthenticated"]) {
+      if (to.matched.some(record => !store.getters["security/hasRole"](record.meta.requiresRole))) {
+        next({path: "/403"});
+      } else {
+        next();
+      }
+    } else {
+      next({
+        path: "/login",
+        query: { redirect: to.fullPath }
+      });
+    }
+  } else {
+    next();
+  }
+});
+
 export const store = new Vuex.Store({
   modules: {
+    security: SecurityModule,
     client,
 	  reservation,
 	  comment,

@@ -1,6 +1,8 @@
 {
   "presets": [
-    ["env", { "modules": false }],
+    ["env", { "targets": {
+      "node": "current"
+    }, "modules": false }],
     "stage-3"
   ]
 }

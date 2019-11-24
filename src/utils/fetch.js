@@ -1,5 +1,6 @@
 import SubmissionError from '../error/SubmissionError'
 import { ENTRYPOINT } from '../config/entrypoint';
+import UnauthorizedError from "../error/NeedsLoginError";
 
 const MIME_TYPE = 'application/ld+json'
 
@@ -11,11 +12,14 @@ export default function (id, options = {}) {
   if (options.body !== undefined && !(options.body instanceof FormData) && options.headers.get('Content-Type') === null) {
     options.headers.set('Content-Type', MIME_TYPE)
   }
-
-  const entryPoint = ENTRYPOINT + (ENTRYPOINT.endsWith('/') ? '' : '/')
-
+  options.withCredentials = true;
+  options.credentials = 'include';
+  if (!("redirect401" in options)) options.redirect401 = true;
+  const entryPoint = ENTRYPOINT + (ENTRYPOINT.endsWith('/') ? '' : '/');
   return fetch(new URL(id, entryPoint), options).then((response) => {
-    if (response.ok) return response
+    if (response.ok) return response;
+
+    if (response.status === 401 && options.redirect401) throw new UnauthorizedError();
 
     return response
       .json()
