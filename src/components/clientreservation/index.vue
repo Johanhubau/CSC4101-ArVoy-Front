@@ -33,10 +33,10 @@
             <div class="row" v-for='(gregions, gIndex) in groupedRegions'>
               <div v-for="region in gregions" class="col-lg px-1">
                 <div class="card mb-3">
-                  <h3 class="card-header">{{region.title}}</h3>
+                  <h3 class="card-header">{{region.name}}</h3>
                   <img style="height: 200px; width: 100%; display: block;" src="" alt="Card image">
                   <div class="card-body">
-                    <p class="card-text">{{region.summary}}</p>
+                    <p class="card-text">{{region.presentation}}</p>
                     <button class="btn btn-secondary" @click="ToRoom(region.id)">Choose</button>
                   </div>
                 </div>
@@ -50,11 +50,13 @@
             <div class="row" v-for='(grooms, gIndex) in groupedRooms'>
               <div v-for="room in grooms" class="col-lg px-1">
                 <div class="card mb-3">
-                  <h3 class="card-header">{{room.title}}</h3>
+                  <h3 class="card-header">{{room.summary}}</h3>
                   <img style="height: 200px; width: 100%; display: block;" src="" alt="Card image">
                   <div class="card-body">
-                    <p class="card-text">{{room.summary}}</p>
-                    <p class="card-text">{{room.surface}}</p>
+                    <p class="card-text">{{room.description}}</p>
+                    <p class="card-text">{{room.superficy}}</p>
+                    <p class="card-text">{{room.capacity}}</p>
+                    <p class="card-text">{{room.price}}</p>
                     <button class="btn btn-secondary" @click="ToInfo(room.id)">Choose</button>
                   </div>
                 </div>
@@ -129,25 +131,13 @@
 </template>
 
 <script>
+    import { mapActions, mapGetters } from 'vuex'
     export default {
         name: "index",
         data() {
             return {
                 currentStep: 1,
-                //Data
-                regions: [
-                    {id: 1, title: "Ile de France", summary: "Region de merde"},
-                    {id: 2, title: "Bordeaux", summary: "Du vin fraté"},
-                    {id: 3, title: "Bretagne", summary: "De l'eau du ciel"},
-                    {id: 4, title: "Espagne", summary: "Hola!"}
-                ],
                 groupedRegions: [],
-                rooms: [
-                    {id: 1, title: "Chambre 1", summary: "Region de merde", surface: "42", capacity: 2},
-                    {id: 2, title: "Chambre 2", summary: "Du vin fraté", surface: "42", capacity: 3},
-                    {id: 3, title: "Chambre 3", summary: "De l'eau du ciel", surface: "42", capacity: 4},
-                    {id: 4, title: "Chambre 4", summary: "Hola!", surface: "42", capacity: 5}
-                ],
                 groupedRooms: [],
                 //Form Data
                 chosenRegion: -1,
@@ -158,18 +148,27 @@
                 telephone: "",
                 address: "",
                 occupants: 0,
-                //ToolData
-                regionLoading: 0,
-                roomLoading: 0,
             }
         },
 
-        mounted() {
-            var _self = this;
-            // divide into n groups
-            this.groupedRegions = _self.chunk(this.regions, 3);
-            this.groupedRooms = _self.chunk(this.rooms, 3)
+        computed: mapGetters({
+            regionError: 'region/list/error',
+            regions: 'region/list/items',
+            regionLoading: 'region/list/isLoading',
+            regionView: 'region/list/view',
+            roomError: 'room/list/error',
+            rooms: 'room/list/items',
+            roomLoading: 'room/list/isLoading',
+            roomView: 'room/list/view'
+        }),
+
+        created () {
+            let that = this;
+            this.$store.dispatch('region/list/default').then(() => {
+                that.groupedRegions = that.chunk(that.regions, 3);
+            });
         },
+
         methods: {
             chunk: function (arr, size) {
                 var newArr = [];
@@ -183,20 +182,18 @@
                 this.chosenRoom = -1;
                 this.resetForm();
                 this.currentStep = 1;
-                this.regionLoading = 1;
-                //Load rooms
-                this.regionLoading = 0;
             },
             ToRoom(regionId) {
                 if (typeof regionId != "undefined") {
                     this.chosenRegion = regionId;
                 }
+                let that = this;
+                this.$store.dispatch('room/list/default', { regions: this.chosenRegion }).then(() => {
+                    that.groupedRooms = that.chunk(that.rooms, 3);
+                });
                 this.chosenRoom = -1;
                 this.resetForm();
                 this.currentStep = 2;
-                this.roomLoading = 1;
-                //Load rooms
-                this.roomLoading = 0;
             },
             ToInfo(roomId) {
                 if (typeof roomId != "undefined") {
