@@ -1,6 +1,7 @@
 <template>
 <div>
-  <profile-template></profile-template>
+  <profile-template
+    :isPrivate="0"></profile-template>
 </div>
 </template>
 

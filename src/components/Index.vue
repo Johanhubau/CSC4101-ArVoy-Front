@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container-fluid p-0 min-vh-100">
+    <div class="container-fluid p-0 vh-100">
       <div class="parallax"></div>
       <div class="container">
         <h1 class="py-5" style="font-size: 4em;">
