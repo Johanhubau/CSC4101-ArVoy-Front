@@ -106,7 +106,7 @@
                        v-model="address">
               </div>
               <div class="form-group">
-                <label for="countryCode">Birthdate</label>
+                <label for="countryCode">Country</label>
                 <input type="text" class="form-control" id="countryCode" aria-describedby="countryCodeHelp"
                        placeholder="Enter country code (E.g FR)"
                        v-model="countryCode">

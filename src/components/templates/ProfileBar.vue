@@ -35,9 +35,10 @@
     z-index: 1;
     width: 400px;
     position: fixed;
+    top: 0;
     right: 0;
     left: auto;
-    flex-flow: column nowrap;
+    padding-top: 76px;
     height: 100%;
     -webkit-box-shadow: -2px 0px 5px -2px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: -2px 0px 5px -2px rgba(0, 0, 0, 0.3);
