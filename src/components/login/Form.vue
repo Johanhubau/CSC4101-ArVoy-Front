@@ -6,30 +6,30 @@
           <div class="card-body">
             <h5 class="card-title text-center">Sign In</h5>
             <form class="form-signin" v-on:submit.prevent>
-              <div class="form-label-group">
+              <div class="form-group">
+                <label for="inputEmail">Email address</label>
                 <input
                   v-model="login"
                   type="email"
                   class="form-control"
                   id="inputEmail"
                 required autofocus>
-                <label for="inputEmail">Email address</label>
               </div>
 
-              <div class="form-label-group">
+              <div class="form-group">
+                <label for="inputPassword">Password</label>
                 <input
                   v-model="password"
                   type="password"
                   class="form-control"
                   id="inputPassword"
                   required>
-                <label for="inputPassword">Password</label>
               </div>
 
               <button
                 :disabled="login.length === 0 || password.length === 0 || isLoading"
                 type="submit"
-                class="btn btn-lg btn-primary btn-block text-uppercase"
+                class="btn btn-primary btn-block text-uppercase"
                 @click="performLogin()"
                 @submit=""
               >Sign in</button>
