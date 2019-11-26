@@ -115,7 +115,7 @@
               </div>
               <div class="form-group">
                 <label for="Occupants">How many will be staying?</label>
-                <select class="form-control" id="occupants" aria-describedby="occupantHelp" v-model="occupants">
+                <select class="custom-select form-control" id="occupants" aria-describedby="occupantHelp" v-model="occupants">
                   <option v-for="n in rooms.find(room => {return room.id === this.chosenRoom}).capacity">{{ n }}
                   </option>
                 </select>
