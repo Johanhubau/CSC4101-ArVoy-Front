@@ -95,6 +95,7 @@ Vue.component('template-footer', require('./components/templates/footer').defaul
 Vue.component('admin-template-header', require('./components/templates/adminHeader').default);
 Vue.component('admin-template-footer', require('./components/templates/adminFooter').default);
 Vue.component('profile-template', require('./components/templates/ProfileBar').default);
+Vue.component('room-template', require('./components/templates/RoomDisplay').default);
 
 
 

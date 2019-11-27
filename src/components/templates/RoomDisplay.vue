@@ -1,5 +1,4 @@
 <template>
-  <div class="container py-5 d-flex justify-content-center">
     <div class="room-container py-2">
       <div class="col p-3">
         <h3 class="text-center py-2">Room Name</h3>
@@ -24,7 +23,6 @@
         </ul>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
