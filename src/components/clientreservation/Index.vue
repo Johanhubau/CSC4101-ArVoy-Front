@@ -2,15 +2,26 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col px-0">
-        <button type="button" class="btn btn-secondary btn-block px-0" @click="ToRegion()">Choose a Region</button>
+        <button type="button" class="btn btn-secondary btn-block px-0"
+                :class="{ disabled: currentStep < 0, 'btn-info': currentStep === 0 }"
+                @click="Init()">Choose your dates
+        </button>
       </div>
       <div class="col px-0">
-        <button type="button" class="btn btn-secondary btn-block px-0" :class="{ disabled: currentStep < 2 }"
+        <button type="button" class="btn btn-secondary btn-block px-0"
+                :class="{ disabled: currentStep < 1, 'btn-info': currentStep === 1 }"
+                :disabled="currentStep < 1" @click="ToRegion()">Choose a Region
+        </button>
+      </div>
+      <div class="col px-0">
+        <button type="button" class="btn btn-secondary btn-block px-0"
+                :class="{ disabled: currentStep < 2, 'btn-info': currentStep === 2 }"
                 :disabled="currentStep < 2" @click="ToRoom()">Choose a Room
         </button>
       </div>
       <div class="col px-0">
-        <button type="button" class="btn btn-secondary btn-block px-0" :class="{ disabled: currentStep < 3 }"
+        <button type="button" class="btn btn-secondary btn-block px-0"
+                :class="{ disabled: currentStep < 3, 'btn-info': currentStep === 3 }"
                 :disabled="currentStep < 3" @click="ToInfo()">Tell us about you
         </button>
       </div>
@@ -26,20 +37,48 @@
       </div>
       <div class="row">
         <transition name="fade" mode="out-in">
+          <div v-if="currentStep === 0" class="w-100" key="0">
+            <h3>
+              Tell us your plans
+            </h3>
+            <br>
+            <form v-on:submit.prevent>
+              <div class="form-group">
+                <label for="occupants">How many will be staying?</label>
+                <select class="custom-select form-control" id="occupants" aria-describedby="occupantHelp"
+                        v-model="occupants" required>
+                  <option v-for="n in [1,2,3,4,5]" :selected="n === occupants ? selected : ''">{{ n }}
+                  </option>
+                </select>
+                <small id="occupantHelp" class="form-text text-muted">(You included)</small>
+              </div>
+
+              <p>Check-in</p>
+              <datepicker v-model="start" name="start" :bootstrap-styling="true" required></datepicker>
+              <br>
+              <p>Check-out</p>
+              <datepicker :disabled-dates="this.disabledDatesEnd" v-model="until" name="until"
+                          :bootstrap-styling="true" required></datepicker>
+              <br>
+              <button class="btn btn-primary w-100" @click="ToRegion()">Continue</button>
+            </form>
+          </div>
           <div v-if="currentStep === 1" class="w-100" key="1">
             <h3>
               Ready? Let's start by choosing a region.
             </h3>
+            <br>
             <div class="row" v-for='(gregions, gIndex) in groupedRegions'>
-              <div v-for="region in gregions" class="col-lg px-1">
-                <div class="card mb-3">
+              <div class="card-deck">
+                <div v-for="region in gregions" class="card mb-3">
+                  <img class="card-img-top" v-if="region.image != null"
+                       :src="(region.image.path.indexOf('http') === -1 ? '/document/' : '') + region.image.path"
+                       alt="Card image">
                   <h3 class="card-header">{{region.name}}</h3>
-                  <img style="height: 200px; width: 100%; display: block;" v-if="region.image != null && region.image.path.indexOf('http') === -1" :src="'/document/' + region.image.path" alt="Card image">
-                  <img style="height: 200px; width: 100%; display: block;" v-if="region.image != null && region.image.path.indexOf('http') !== -1" :src="region.image.path" alt="Card image">
                   <div class="card-body">
                     <p class="card-text">{{region.presentation}}</p>
-                    <button class="btn btn-secondary" @click="ToRoom(region.id)">Choose</button>
                   </div>
+                  <button class="btn btn-secondary card-footer" @click="ToRoom(region.id)">Choose</button>
                 </div>
               </div>
             </div>
@@ -48,25 +87,30 @@
             <h3>
               Great choice! Now choose a Room. We're sure you'll find something to your liking
             </h3>
+            <br>
             <div class="row" v-for='(grooms, gIndex) in groupedRooms'>
-              <div v-for="room in grooms" class="col-lg px-1">
-                <div class="card mb-3">
+              <div class="card-deck">
+                <div v-for="room in grooms" class="card mb-3">
+                  <img class="card-img-top" v-if="room.image != null"
+                       :src="(room.image.path.indexOf('http') === -1 ? '/document/' : '') + room.image.path"
+                       alt="Card image">
                   <h3 class="card-header">{{room.summary}}</h3>
-                  <img style="height: 200px; width: 100%; display: block;" v-if="room.image != null && room.image.path.indexOf('http') === -1" :src="'/document/' + room.image.path" alt="Card image">
-                  <img style="height: 200px; width: 100%; display: block;" v-if="room.image != null && room.image.path.indexOf('http') !== -1" :src="room.image.path" alt="Card image">
                   <div class="card-body">
                     <p class="card-text">{{room.description}}</p>
                     <p class="card-text">{{room.superficy}}</p>
                     <p class="card-text">{{room.capacity}}</p>
                     <p class="card-text">{{room.price}}</p>
-                    <button class="btn btn-secondary" @click="ToInfo(room.id)">Choose</button>
                   </div>
+                  <button class="btn btn-secondary card-footer" @click="ToInfo(room.id)">Choose</button>
                 </div>
               </div>
             </div>
           </div>
           <div v-else-if="currentStep === 3" class="w-100" key="3">
-            <h3>
+            <h3 v-if="hasInformation">
+              We already have the following information, just make sure it's all good!
+            </h3>
+            <h3 v-else>
               Now tell us about you and we're good to go!
             </h3>
             <form>
@@ -115,14 +159,6 @@
                 <small id="countryCodeHelp" class="form-text text-muted">If you don't know your country code you can
                   find it <a href="https://en.wikipedia.org/wiki/ISO_3166-1" target="_blank">here</a></small>
               </div>
-              <div class="form-group">
-                <label for="Occupants">How many will be staying?</label>
-                <select class="custom-select form-control" id="occupants" aria-describedby="occupantHelp" v-model="occupants">
-                  <option v-for="n in rooms.find(room => {return room.id === this.chosenRoom}).capacity">{{ n }}
-                  </option>
-                </select>
-                <small id="occupantHelp" class="form-text text-muted">(You included)</small>
-              </div>
               <button class="btn btn-primary" @click="submit()">Submit</button>
             </form>
           </div>
@@ -133,42 +169,60 @@
 </template>
 
 <script>
-    import { mapActions, mapGetters } from 'vuex'
+    import {mapActions, mapGetters} from 'vuex'
+    import Datepicker from "vuejs-datepicker";
+
     export default {
         name: "index",
+        components: {
+            Datepicker
+        },
         data() {
             return {
-                currentStep: 1,
+                currentStep: 0,
                 groupedRegions: [],
                 groupedRooms: [],
                 //Form Data
+                chosenDates: [],
                 chosenRegion: -1,
                 chosenRoom: -1,
-                firstName: "",
+                firstName: '',
                 lastName: "",
                 email: "",
                 telephone: "",
                 address: "",
                 occupants: 0,
+                countryCode: '',
+                start: null,
+                until: null
             }
         },
 
-        computed: mapGetters({
-            regionError: 'region/list/error',
-            regions: 'region/list/items',
-            regionLoading: 'region/list/isLoading',
-            regionView: 'region/list/view',
-            roomError: 'room/list/error',
-            rooms: 'room/list/items',
-            roomLoading: 'room/list/isLoading',
-            roomView: 'room/list/view'
-        }),
+        computed: {
+            disabledDatesStart() {
+                return {to: this.start};
+            },
+            disabledDatesEnd() {
+                return {to: this.start, from: this.until};
+            },
+            hasInformation() {
+                return this.$store.getters["security/hasInformation"];
+            },
+            ...mapGetters({
+                regionError: 'region/list/error',
+                regions: 'region/list/items',
+                regionLoading: 'region/list/isLoading',
+                regionView: 'region/list/view',
+                roomError: 'room/list/error',
+                rooms: 'room/list/items',
+                roomLoading: 'room/list/isLoading',
+                roomView: 'room/list/view'
+            })
+        },
 
-        created () {
-            let that = this;
-            this.$store.dispatch('region/list/default').then(() => {
-                that.groupedRegions = that.chunk(that.regions, 3);
-            });
+
+        created() {
+
         },
 
         methods: {
@@ -179,7 +233,25 @@
                 }
                 return newArr;
             },
+            Init() {
+                this.currentStep = 0;
+                this.chosenRegion = -1;
+                this.chosenRoom = -1;
+                this.chosenDates = [];
+            },
             ToRegion() {
+                let that = this;
+                console.log(this.start);
+                this.$store.dispatch('region/list/default', {
+                        'rooms.capacity[gte]': this.occupants,
+                        'rooms.unavailablePeriods[between_start]': this.start.toLocaleDateString("en-EN"),
+                        'rooms.unavailablePeriods[between_until]': this.until.toLocaleDateString("en-EN"),
+                        'rooms.reservations[between_start]': this.start.toLocaleDateString("en-EN"),
+                        'rooms.reservations[between_until]': this.until.toLocaleDateString("en-EN"),
+                    }
+                ).then(() => {
+                    that.groupedRegions = that.chunk(that.regions, 3);
+                });
                 this.chosenRegion = -1;
                 this.chosenRoom = -1;
                 this.resetForm();
@@ -190,7 +262,14 @@
                     this.chosenRegion = regionId;
                 }
                 let that = this;
-                this.$store.dispatch('room/list/default', { regions: this.chosenRegion }).then(() => {
+                this.$store.dispatch('room/list/default', {
+                    regions: this.chosenRegion,
+                    'capacity[gte]': this.occupants,
+                    'unavailablePeriods[between_start]': this.start.toLocaleDateString("en-EN"),
+                    'unavailablePeriods[between_until]': this.until.toLocaleDateString("en-EN"),
+                    'reservations[between_start]': this.start.toLocaleDateString("en-EN"),
+                    'reservations[between_until]': this.until.toLocaleDateString("en-EN"),
+                    }).then(() => {
                     that.groupedRooms = that.chunk(that.rooms, 3);
                 });
                 this.chosenRoom = -1;
@@ -205,12 +284,15 @@
                 this.resetForm();
             },
             resetForm() {
-                this.firstName = "";
-                this.lastName = "";
-                this.email = "";
-                this.telephone = "";
-                this.address = "";
-                this.occupants = 0;
+                if (this.$store.getters["security/isAuthenticated"]) {
+                    this.firstName = this.$store.getters["security/getInformation"].firstname;
+                    this.lastName = this.$store.getters["security/getInformation"].lastname;
+                    this.birthdate = this.$store.getters["security/getInformation"].birthdate;
+                    this.email = this.$store.getters["security/getInformation"].email;
+                    this.telephone = this.$store.getters["security/getInformation"].telephone;
+                    this.address = this.$store.getters["security/getInformation"].address;
+                    this.countryCode = this.$store.getters["security/getInformation"].country;
+                }
             },
             submit() {
 
@@ -223,7 +305,9 @@
   .fade-enter-active, .fade-leave-active {
     transition: opacity .2s;
   }
-  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
+  {
     opacity: 0;
   }
 </style>

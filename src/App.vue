@@ -14,6 +14,7 @@
     import axios from "axios";
     import SecurityAPI from "./api/security";
     import NeedsLoginError from "./error/NeedsLoginError";
+
     export default {
         name: "App",
         computed: {

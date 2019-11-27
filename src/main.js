@@ -4,7 +4,7 @@ import VueRouter from 'vue-router';
 import SecurityModule from "./store/security";
 import App from './App.vue';
 import SecurityAPI from "./api/security";
-
+import Datepicker from 'vuejs-datepicker';
 //import routes
 import clientRoutes from './router/client';
 import reservationRoutes from './router/reservation';
@@ -33,6 +33,7 @@ import NeedsLoginError from "./error/NeedsLoginError";
 
 import '../src/assets/css/app.scss';
 import '../src/assets/js/bootstrap.bundle'
+
 
 Vue.config.productionTip = false;
 

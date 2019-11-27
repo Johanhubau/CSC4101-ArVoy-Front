@@ -36,6 +36,9 @@ export default {
     getDisplayName(state) {
       return state.user.displayName;
     },
+    getInformation(state) {
+      return state.user.information;
+    },
     hasRole(state) {
       return role => {
         return state.user.roles.indexOf(role) !== -1;

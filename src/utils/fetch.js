@@ -18,6 +18,7 @@ export default function (id, options = {}) {
   const entryPoint = ENTRYPOINT + (ENTRYPOINT.endsWith('/') ? '' : '/');
   let url = new URL(id, entryPoint);
   if ("filters" in options) Object.keys(options.filters).forEach(key => url.searchParams.append(key, options.filters[key]));
+  url.search = decodeURIComponent(url.searchParams.toString());
   return fetch(url, options).then((response) => {
     if (response.ok) return response;
 
