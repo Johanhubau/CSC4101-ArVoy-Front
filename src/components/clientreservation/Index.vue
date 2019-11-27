@@ -34,7 +34,7 @@
               <div v-for="region in gregions" class="col-lg px-1">
                 <div class="card mb-3">
                   <h3 class="card-header">{{region.name}}</h3>
-                  <img style="height: 200px; width: 100%; display: block;" src="" alt="Card image">
+                  <img style="height: 200px; width: 100%; display: block;" v-if="region.image != null" :src="'/document/' + region.image.path" alt="Card image">
                   <div class="card-body">
                     <p class="card-text">{{region.presentation}}</p>
                     <button class="btn btn-secondary" @click="ToRoom(region.id)">Choose</button>
@@ -51,7 +51,7 @@
               <div v-for="room in grooms" class="col-lg px-1">
                 <div class="card mb-3">
                   <h3 class="card-header">{{room.summary}}</h3>
-                  <img style="height: 200px; width: 100%; display: block;" src="" alt="Card image">
+                  <img style="height: 200px; width: 100%; display: block;" v-if="room.image != null" :src="'/document/' + room.image.path" alt="Card image">
                   <div class="card-body">
                     <p class="card-text">{{room.description}}</p>
                     <p class="card-text">{{room.superficy}}</p>
