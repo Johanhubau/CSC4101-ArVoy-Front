@@ -53,12 +53,12 @@ export default {
       state.isAuthenticated = false;
       state.user = null;
     },
-    [AUTHENTICATING_SUCCESS](state, user) {
+    [AUTHENTICATING_SUCCESS](state, payload) {
       state.isInitiated = true;
       state.isLoading = false;
       state.error = null;
       state.isAuthenticated = true;
-      state.user = user;
+      state.user = payload.user;
     },
     [AUTHENTICATING_ERROR](state, error) {
       state.isInitiated = false;
@@ -80,7 +80,7 @@ export default {
       commit(AUTHENTICATING);
       try {
         let response = await SecurityAPI.login(payload.login, payload.password);
-        commit(AUTHENTICATING_SUCCESS, response.data);
+        commit(AUTHENTICATING_SUCCESS, response);
         return response.data;
       } catch (error) {
         commit(AUTHENTICATING_ERROR, error);

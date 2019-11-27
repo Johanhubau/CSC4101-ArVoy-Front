@@ -25,7 +25,9 @@
         name: "App",
         computed: {
             getDisplayName() {
-                return this.$store.getters["security/hasInformation"] && this.$store.getters["security/getDisplayName"];
+                if (this.$store.getters["security/hasInformation"])
+                  return this.$store.getters["security/getDisplayName"];
+                else return "Unknown";
             },
             isAuthenticated() {
                 return this.$store.getters["security/isAuthenticated"]
