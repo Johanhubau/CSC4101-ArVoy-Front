@@ -1,21 +1,25 @@
 import fetch from '../../../../utils/fetch'
 import * as types from './mutation_types'
 
-export const retrieve = ({ commit }, id) => {
+export const retrieve = ({commit}, id) => {
   commit(types.CLIENT_SHOW_TOGGLE_LOADING)
 
-  return fetch(id)
-    .then(response => response.json())
-    .then((data) => {
-      commit(types.CLIENT_SHOW_TOGGLE_LOADING)
-      commit(types.CLIENT_SHOW_SET_RETRIEVED, data)
-    })
-    .catch((e) => {
-      commit(types.CLIENT_SHOW_TOGGLE_LOADING)
-      commit(types.CLIENT_SHOW_SET_ERROR, e.message)
-    })
+  return new Promise((resolve, reject) => {
+    return fetch(id)
+      .then(response => response.json())
+      .then((data) => {
+        commit(types.CLIENT_SHOW_TOGGLE_LOADING)
+        commit(types.CLIENT_SHOW_SET_RETRIEVED, data)
+        resolve();
+      })
+      .catch((e) => {
+        commit(types.CLIENT_SHOW_TOGGLE_LOADING)
+        commit(types.CLIENT_SHOW_SET_ERROR, e.message)
+        reject();
+      })
+  });
 }
 
-export const reset = ({ commit }) => {
+export const reset = ({commit}) => {
   commit(types.CLIENT_SHOW_RESET)
 }
