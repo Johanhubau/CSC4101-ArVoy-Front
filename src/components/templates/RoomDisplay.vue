@@ -1,24 +1,22 @@
 <template>
     <div class="room-container py-2">
       <div class="col p-3">
-        <h3 class="text-center py-2">Room Name</h3>
+        <h3 class="text-center py-2">{{name}}</h3>
         <div class="image">
 
         </div>
         <ul class="list-group">
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            <p>Description: <small>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis nisi leo. Aliquam
-              tristique, ligula non euismod semper, sem ex malesuada libero, id ullamcorper ex lacus ac libero. Mauris
-              varius convallis lorem, vitae bibendum magna.</small></p>
+            <p>Description: <small>{{description}}</small></p>
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            <p>Superficy: <small>83m</small></p>
+            <p>Superficy: <small>{{superficy}}m</small></p>
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            <p>Capacity: <small>4 Occupants</small></p>
+            <p>Capacity: <small>{{capacity}} Occupants</small></p>
           </li>
           <li class="list-group-item d-flex justify-content-between align-items-center">
-            <p>Price: <small>250</small></p>
+            <p>Price: <small>{{price}}</small></p>
           </li>
         </ul>
       </div>
@@ -27,7 +25,29 @@
 
 <script>
     export default {
-        name: "Display"
+        name: "Display",
+        props: {
+            name: {
+                type: String,
+                default: ''
+            },
+            description: {
+                type: String,
+                default: ''
+            },
+            superficy: {
+                type: String,
+                default: ''
+            },
+            capacity: {
+                type: String,
+                default: ''
+            },
+            price: {
+                type: String,
+                default: ''
+            },
+        }
     }
 </script>
 
