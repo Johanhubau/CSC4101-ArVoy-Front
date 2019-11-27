@@ -35,6 +35,7 @@
   .room-container {
     width: 600px;
     border-radius: 10px;
+    background-color: white;
     -webkit-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.3);
     box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.3);

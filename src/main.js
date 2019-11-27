@@ -97,6 +97,7 @@ Vue.component('admin-template-footer', require('./components/templates/adminFoot
 Vue.component('profile-template', require('./components/templates/ProfileBar').default);
 Vue.component('room-template', require('./components/templates/RoomDisplay').default);
 Vue.component('region-template', require('./components/templates/RegionDisplay').default);
+Vue.component('reservation-template', require('./components/templates/ReservationDisplay').default);
 
 
 

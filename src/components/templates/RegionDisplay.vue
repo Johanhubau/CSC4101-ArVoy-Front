@@ -1,5 +1,5 @@
 <template>
-  <div class="region-container py-2">
+  <div class="reservation-container py-2">
     <div class="col p-3">
       <h3 class="text-center py-2">Region Name</h3>
       <div class="image">
@@ -26,10 +26,11 @@
 </script>
 
 <style scoped>
-  .region-container {
+  .reservation-container {
     width: 100%;
     max-width: 600px;
     border-radius: 10px;
+    background-color: white;
     -webkit-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.3);
     box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.3);
