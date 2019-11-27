@@ -1,31 +1,97 @@
 <template>
-    <div class="profile-container">
-      <div class="picture p-4">
-        <img class="profile" src="" alt="Test">
-      </div>
-      <div class="text-center">
-        <h2 class="pb-3">Lisa Turner</h2>
-        <div class="text-right mr-4 p-4">
-          <p class="my-1">42 Years Old</p>
-          <p v-if="isPrivate" class="my-1">(+33) 6 11 22 33 44</p>
-          <p v-if="isPrivate" class="my-1">lisa.turner@exemple.com</p>
-          <p v-if="isPrivate" class="my-1">Unknown address</p>
-        </div>
-      </div>
-      <div class="text-right mr-4 pt-2">
-        <a v-if="!isPrivate" class="py-1 nav-link" href="">See home listings</a>
-        <a v-if="isPrivate" class="py-1 nav-link" href="">Account settings</a>
-        <a v-if="isPrivate" class="py-1 nav-link" href="">Logout</a>
+  <div class="profile-container">
+    <div class="picture p-4">
+      <img class="profile" src="" alt="Test">
+    </div>
+    <div v-if="item" class="text-center">
+      <h2 class="pb-3">{{ item['firstname'] }} {{ item['lastname'] }}</h2>
+      <div :class="{ 'text-right mr-4': type !== 'staff'}" class="p-4">
+        <h2 v-if="item['title']" class="my-1">{{ item['title'] }}</h2>
+        <p v-if="birthdate !== ''" class="my-1">{{ this.birthdate }} Years Old</p>
+        <p v-if="isPrivate && item['telephone']" class="my-1">{{ item['telephone'] }}</p>
+        <p v-if="(isPrivate || type === 'staff') && user" class="my-1">{{ user['email'] }}</p>
+        <p v-if="isPrivate && item['address']" class="my-1">{{ item['address'] }}</p>
       </div>
     </div>
+    <div class="text-right mr-4 pt-2">
+      <a v-if="!isPrivate && type ==='owner'" class="py-1 nav-link" href="">See home listings</a>
+      <a v-if="isPrivate" class="py-1 nav-link" href="">Account settings</a>
+      <a v-if="isPrivate" class="py-1 nav-link" href="">Logout</a>
+    </div>
+  </div>
 </template>
 
 <script>
+    import {mapActions, mapGetters} from 'vuex'
+
     export default {
         name: "ProfileBar",
-        props: [
-            'isPrivate',
-        ],
+
+        props: {
+            isPrivate: {
+                type: Number,
+                default: 1
+            },
+            type: {
+                type: String,
+                default: "owner"
+            }
+        },
+
+        data () {
+            return {
+                birthdate: '',
+                item: null,
+            }
+        },
+
+        computed: mapGetters({
+            deleteError: 'owner/del/error',
+            error: 'owner/show/error',
+            isLoading: 'owner/show/isLoading',
+            owner: 'owner/show/retrieved',
+            user: 'user/show/retrieved',
+            client: 'client/show/retrieved',
+            staff: 'staff/show/retrieved'
+        }),
+
+        created() {
+            let that = this;
+            if (this.type === "owner") {
+                this.$store.dispatch('owner/show/retrieve', "/api/owners/" + this.$route.params.id).then(() => {
+                    if (that.isPrivate) {
+                        that.$store.dispatch('user/show/retrieve', this.owner["user"]);
+                    }
+                    that.item = this.owner;
+                });
+            } else if (this.type === "client") {
+                this.$store.dispatch('client/show/retrieve', "/api/clients/" + this.$route.params.id).then(() => {
+                    if (that.isPrivate) {
+                        that.$store.dispatch('user/show/retrieve', this.client["user"]);
+                    }
+                    if (this.client["birthdate"]){
+                        let ageDifMs = Date.now() - new Date(this.client["birthdate"]);
+                        let ageDate = new Date(ageDifMs); // miliseconds from epoch
+                        this.birthdate = Math.abs(ageDate.getUTCFullYear() - 1970);
+                    }
+                    that.item = this.client;
+                });
+            } else if (this.type === "staff") {
+                this.$store.dispatch('staff/show/retrieve', "/api/staff/" + this.$route.params.id).then(() => {
+                    this.$store.dispatch('user/show/retrieve', this.staff["user"]);
+                    that.item = this.staff;
+                });
+            }
+
+        },
+
+        methods: {
+            ...mapActions({
+                del: 'owner/del/del',
+                reset: 'owner/show/reset',
+                retrieve: 'owner/show/retrieve'
+            }),
+        }
     }
 </script>
 
@@ -50,7 +116,7 @@
     min-height: 150px
   }
 
-  img.profile{
+  img.profile {
     border-radius: 50%;
   }
 </style>

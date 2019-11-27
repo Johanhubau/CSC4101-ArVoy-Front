@@ -10,6 +10,6 @@ export default [
   { name: 'OwnerCreate', path: '/admin/owners/create', component: OwnerCreate },
   { name: 'OwnerUpdate', path: '/admin/owners/edit/:id', component: OwnerUpdate },
   { name: 'OwnerShow', path: '/admin/owners/show/:id', component: OwnerShow },
-  { name: 'OwnerDashboard', path: '/owners/', component: Dashboard },
+  { name: 'OwnerDashboard', path: '/owners/:id', component: Dashboard },
   { name: 'OwnerRegister', path: '/register/owner', component: Register }
 ]

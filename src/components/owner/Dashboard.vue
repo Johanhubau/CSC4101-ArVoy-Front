@@ -59,8 +59,11 @@
 </template>
 
 <script>
+    import {mapActions, mapGetters} from 'vuex'
+
     export default {
         name: "Dashboard",
+
         data() {
             return {
                 section: "listing",
@@ -77,7 +80,9 @@
                 ],
             }
         },
+
         methods: {
+
             ToListings() {
                 this.section = "listing"
             },
@@ -107,7 +112,8 @@
     -moz-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.3);
     box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.3);
   }
-  .modal-content{
+
+  .modal-content {
     background-color: initial !important;
   }
 </style>
