@@ -1,7 +1,7 @@
 <template>
   <div class="profile-container">
     <div class="picture p-4">
-      <img class="profile" :src="(item.image.path.indexOf('http') === -1 ? '/document/' : '') + item.image.path" alt="Test">
+      <img class="profile" v-if="item" :src="(item.image.path.indexOf('http') === -1 ? '/document/' : '') + item.image.path" alt="Test">
     </div>
     <div v-if="item" class="text-center">
       <h2 class="pb-3">{{ item['firstname'] }} {{ item['lastname'] }}</h2>
@@ -28,8 +28,8 @@
 
         props: {
             isPrivate: {
-                type: Number,
-                default: 1
+                type: Boolean,
+                default: false
             },
             type: {
                 type: String,

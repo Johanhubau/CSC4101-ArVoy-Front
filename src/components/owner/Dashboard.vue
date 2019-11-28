@@ -54,8 +54,6 @@
               <div class="reservation-container p-3" style="cursor: pointer"
                    data-toggle="modal" :data-target="'#reservationDialog' + index">
                 <h5>From {{ reservation['from'] }} To {{ reservation['until'] }}</h5>
-                <p class="my-1">Client: {{ reservation['client'] }} </p>
-                <p class="my-1">Listing: {{ reservation['room'] }}</p>
                 <div class="form-group">
                   <div class="custom-control custom-switch">
                     <input type="checkbox" class="custom-control-input" id="validated" @click="validate(reservation)" v-model="reservation['validated']" checked="">

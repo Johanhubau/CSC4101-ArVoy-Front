@@ -149,17 +149,15 @@
             } else {
                 this.$store.dispatch('room/show/retrieve', this.reservation['room']).then((room) => {
                     that.room = room;
-                    that.$store.dispatch('owner/show/retrieve', room['owner']).then((owner) => {
-                        that.owner = owner;
+                    that.owner = room.owner;
 
-                        if (that.owner["birthdate"]) {
-                            let ageDifMs = Date.now() - new Date(that.owner["birthdate"]);
-                            let ageDate = new Date(ageDifMs); // miliseconds from epoch
-                            that.owner.birthdate = Math.abs(ageDate.getUTCFullYear() - 1970);
-                        }
-                        that.$store.dispatch('user/show/retrieve', owner["user"]).then((user) => {
+                    if (that.owner["birthdate"]) {
+                        let ageDifMs = Date.now() - new Date(that.owner["birthdate"]);
+                        let ageDate = new Date(ageDifMs); // miliseconds from epoch
+                        that.owner.birthdate = Math.abs(ageDate.getUTCFullYear() - 1970);
+                    }
+                    that.$store.dispatch('user/show/retrieve', that.owner["user"]).then((user) => {
 
-                        });
                     });
                 });
                 this.$store.dispatch('client/show/retrieve', this.reservation['client']).then((client) => {
