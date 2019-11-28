@@ -8,7 +8,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav"
            v-bind:class="{ show: show }">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav mr-auto">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Entities
@@ -24,6 +24,11 @@
               <router-link class="dropdown-item" to="/admin/unavailable_periods">Unavailable Periods</router-link>
               <router-link class="dropdown-item" to="/admin/users">Users</router-link>
             </div>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item" v-if="isAuthenticated">
+            <router-link class="nav-link" to="/logout">Logout</router-link>
           </li>
         </ul>
       </div>

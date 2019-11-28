@@ -8,6 +8,10 @@ export default {
     })});
     return await response.json();
   },
+  async logout() {
+    let response = await fetch('logout', { redirect401: false });
+    return await response.json();
+  },
   async checkLogin() {
     const response = await fetch('/api/login', {redirect401: false});
     const json = await response.json();

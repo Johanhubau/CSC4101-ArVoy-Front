@@ -3,6 +3,7 @@ import SecurityAPI from "../api/security";
 const AUTHENTICATING = "AUTHENTICATING",
   AUTHENTICATING_SUCCESS = "AUTHENTICATING_SUCCESS",
   AUTHENTICATING_ERROR = "AUTHENTICATING_ERROR",
+  LOGOUT_SUCCESS = "LOGOUT_SUCCESS",
   PROVIDING_DATA_ON_REFRESH_SUCCESS = "PROVIDING_DATA_ON_REFRESH_SUCCESS";
 
 export default {
@@ -60,6 +61,13 @@ export default {
       state.isAuthenticated = true;
       state.user = payload.user;
     },
+    [LOGOUT_SUCCESS](state) {
+      state.isInitiated = false;
+      state.isLoading = false;
+      state.error = null;
+      state.isAuthenticated = false;
+      state.user = null;
+    },
     [AUTHENTICATING_ERROR](state, error) {
       state.isInitiated = false;
       state.isLoading = false;
@@ -86,6 +94,10 @@ export default {
         commit(AUTHENTICATING_ERROR, error);
         return null;
       }
+    },
+    logout({commit}) {
+      SecurityAPI.logout();
+      commit(LOGOUT_SUCCESS);
     },
     onRefresh({commit}, payload) {
       commit(PROVIDING_DATA_ON_REFRESH_SUCCESS, payload);

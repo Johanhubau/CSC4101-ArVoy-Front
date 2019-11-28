@@ -15,8 +15,17 @@
           <li class="nav-item" v-if="!isAuthenticated">
             <router-link class="nav-link" to="/login">Connect</router-link>
           </li>
+          <li class="nav-item dropdown" v-else>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Connected as {{ getDisplayName }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <router-link class="dropdown-item" to="/home">Home</router-link>
+              <div class="dropdown-divider"></div>
+              <router-link class="dropdown-item" to="/logout">Logout</router-link>
+            </div>
+          </li>
         </ul>
-        <span class="navbar-text" v-if="isAuthenticated">Connected as {{ getDisplayName }}</span>
       </div>
     </nav>
   </div>
