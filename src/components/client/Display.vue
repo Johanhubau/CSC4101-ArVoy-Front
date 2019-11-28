@@ -11,6 +11,18 @@
 <script>
     export default {
         name: "Dashboard",
+        data () {
+            return {
+                isPrivate: 0,
+            }
+        },
+        created () {
+            if (this.$store.getters["security/getInformation"].client_id != this.$route.params.id){
+                this.isPrivate = 0;
+            }else{
+                this.isPrivate = 1;
+            }
+        }
     }
 </script>
 

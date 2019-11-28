@@ -14,9 +14,8 @@
       </div>
     </div>
     <div class="text-right mr-4 pt-2">
-      <a v-if="!isPrivate && type ==='owner'" class="py-1 nav-link" href="">See home listings</a>
-      <a v-if="isPrivate" class="py-1 nav-link" href="">Account settings</a>
-      <a v-if="isPrivate" class="py-1 nav-link" href="">Logout</a>
+      <a v-if="isPrivate" class="py-1 nav-link" :href="settingsRoute">Account settings</a>
+      <a v-if="isPrivate" class="py-1 nav-link" href="/logout">Logout</a>
     </div>
   </div>
 </template>
@@ -42,6 +41,7 @@
             return {
                 birthdate: '',
                 item: null,
+                settingsRoute: ''
             }
         },
 
@@ -62,7 +62,13 @@
                     if (that.isPrivate) {
                         that.$store.dispatch('user/show/retrieve', this.owner["user"]);
                     }
+                    if (this.owner["birthdate"]){
+                        let ageDifMs = Date.now() - new Date(this.owner["birthdate"]);
+                        let ageDate = new Date(ageDifMs); // miliseconds from epoch
+                        this.birthdate = Math.abs(ageDate.getUTCFullYear() - 1970);
+                    }
                     that.item = this.owner;
+                    that.settingsRoute = '/owners/' + that.$route.params.id + '/settings';
                 });
             } else if (this.type === "client") {
                 this.$store.dispatch('client/show/retrieve', "/api/clients/" + this.$route.params.id).then(() => {
@@ -75,11 +81,13 @@
                         this.birthdate = Math.abs(ageDate.getUTCFullYear() - 1970);
                     }
                     that.item = this.client;
+                    that.settingsRoute = '/home/' + that.$route.params.id + '/settings';
                 });
             } else if (this.type === "staff") {
                 this.$store.dispatch('staff/show/retrieve', "/api/staff/" + this.$route.params.id).then(() => {
                     this.$store.dispatch('user/show/retrieve', this.staff["user"]);
                     that.item = this.staff;
+                    that.settingsRoute = '/';
                 });
             }
 

@@ -67,5 +67,14 @@
 </script>
 
 <style scoped>
+  .reservation-container {
+    border-radius: 15px;
+    -webkit-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 5px -2px rgba(0, 0, 0, 0.3);
+  }
 
+  .modal-content {
+    background-color: initial !important;
+  }
 </style>

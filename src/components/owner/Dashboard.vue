@@ -1,7 +1,7 @@
 <template>
   <div style="margin-right: 400px;">
     <profile-template
-      :isPrivate="1">
+      :isPrivate="isPrivate">
     </profile-template>
     <div v-if="rooms" v-for="(listing, index) in rooms" class="modal fade" :id="'roomDialog' + index" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
@@ -86,7 +86,7 @@
                 section: "listing",
                 reservationLoading: false,
                 roomLoading: false,
-                isPrivate: true,
+                isPrivate: false,
             }
         },
 
@@ -102,6 +102,11 @@
         }),
 
         created() {
+            if (this.$store.getters["security/getInformation"].owner_id != this.$route.params.id){
+                this.isPrivate = 0;
+            }else{
+                this.isPrivate = 1;
+            }
             this.roomLoading = true;
             this.$store.dispatch('room/list/default', {owners: "/api/owners/" + this.$route.params.id}).then(() => {});
             this.roomLoading = false;

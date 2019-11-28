@@ -5,6 +5,7 @@ import ClientShow from '../components/client/Show'
 import ClientRegister from '../components/client/Register'
 import ClientDisplay from '../components/client/Display'
 import ClientDashboard from '../components/client/Dashboard'
+import ClientSettings from '../components/client/Settings'
 
 export default [
   { name: 'ClientList', path: '/admin/clients/', component: ClientList, meta: { requiresAuth: true, requiresRole: "ROLE_ADMIN"} },
@@ -13,5 +14,6 @@ export default [
   { name: 'ClientShow', path: '/admin/clients/show/:id', component: ClientShow, meta: { requiresAuth: true, requiresRole: "ROLE_ADMIN"} },
   { name: 'ClientRegister', path: '/register', component: ClientRegister},
   { name: 'ClientDisplay', path: '/clients/:id', component: ClientDisplay, meta: { requiresAuth: true, requiresRole: "ROLE_CLIENT"}},
-  { name: 'ClientDashboard', path: '/home/:id', component: ClientDashboard, meta: { requiresAuth: true, requiresRole: "ROLE_CLIENT"} }
+  { name: 'ClientDashboard', path: '/home/:id', component: ClientDashboard, meta: { requiresAuth: true, requiresRole: "ROLE_CLIENT"} },
+  { name: 'ClientSettings', path: '/home/:id/settings', component: ClientSettings, meta: { requiresAuth: true, requiresRole: "ROLE_CLIENT"} }
 ]
