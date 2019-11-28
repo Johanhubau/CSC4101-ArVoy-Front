@@ -27,10 +27,19 @@
           </ul>
         </div>
         <div v-if="mode ==='comment'" class="col p-3" key="2">
-          <h3 class="text-center py-2">{{name}}</h3>
-          <div v-for="comment in comments">
-            <p>{{comment['firstname']}} {{comment['lastname']}}<small>{{comment['content']}}</small></p>
-          </div>
+          <h3 class="text-center py-2">{{room.summary}}</h3>
+          <ul class="p-0">
+            <li v-if="commentsData" v-for="comment in commentsData" class="list-group-item d-flex justify-content-between align-items-center">
+              <div class="row pl-3 w-100">
+                <div class="col-10 p-0 justify-content-center">
+                  <p>{{comment['comment']}}</p>
+                </div>
+                <div class="col p-0 text-right">
+                  {{comment['rating']}}/5
+                </div>
+              </div>
+            </li>
+          </ul>
           <button class="btn btn-sm btn-secondary" @click="ToRoom">Back</button>
         </div>
       </transition>
@@ -62,13 +71,22 @@
         data () {
             return {
                 mode: 'room',
+                commentsData: []
             }
         },
         created() {
             let that = this;
             if (this.room == null) this.id = decodeURIComponent(this.$route.params.id);
-            this.$store.dispatch('room/show/retrieve', "/api/rooms/" + this.id).then(() => {
+
+            this.$store.dispatch('room/show/retrieve', "/api/rooms/" + this.room.id).then((data) => {
                 that.room = that.retrievedRoom;
+                for (var i = 0; i < that.room.comments.length; i++) {
+
+                    this.$store.dispatch('comment/show/retrieve', that.room.comments[i]).then((comment) => {
+                        that.commentsData.push(comment);
+                        console.log(that.commentsData);
+                    });
+                }
             });
         },
         methods: {

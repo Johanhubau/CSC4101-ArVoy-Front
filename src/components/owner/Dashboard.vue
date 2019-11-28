@@ -3,22 +3,17 @@
     <profile-template
       :isPrivate="isPrivate">
     </profile-template>
-    <div v-if="rooms" v-for="(listing, index) in rooms" class="modal fade" :id="'roomDialog' + index" tabindex="-1" role="dialog" aria-hidden="true">
+    <div v-if="rooms" v-for="(room, index) in rooms" class="modal fade" :id="'roomDialog' + index" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <room-template
-            :name="listing['summary']"
-            :description="listing['description']"
-            :superficy="listing['superficy']"
-            :capacity="listing['capacity']"
-            :price="listing['price']"></room-template>
+          <room-template :room="room"></room-template>
         </div>
       </div>
     </div>
-    <div v-if="reservations" v-for="reservation in reservations" class="modal fade" :id="'reservationDialog' + index" tabindex="-1" role="dialog" aria-hidden="true">
+    <div v-if="reservations" v-for="(reservation, index) in reservations" class="modal fade" :id="'reservationDialog' + index" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <reservation-template :id="reservation['id']"></reservation-template>
+          <reservation-template :reservation="reservation"></reservation-template>
         </div>
       </div>
     </div>
@@ -41,22 +36,23 @@
         <transition name="fade" mode="out-in">
           <div v-if="section === 'listing'" key="1">
             <h2>Listings</h2>
-            <div v-if="rooms" v-for="(listing, index) in rooms" class="col-lg px-1 py-2">
-              <div class="reservation-container p-3 row" data-toggle="modal" :data-target="'#roomDialog' + index">
-                <div class="p-3">
-                  <img src="" alt="Room Image">
-                </div>
-                <div class="p-3">
-                  <h5>{{ listing['summary'] }}</h5>
-                  <p class="my-1">{{ listing['description'] }} </p>
+            <div v-if="rooms" v-for="(room, index) in rooms" class="col-lg px-1 py-2">
+              <div class="reservation-container p-3 row" style="cursor: pointer"
+                   data-toggle="modal" :data-target="'#roomDialog' + index">
+                <div class="p-3" style="width: 20%; display: inline-block"
+                     :style="'background-image: url(' + (room.image.path.indexOf('http') === -1 ? '/document/' : '') + room.image.path + ')'"></div>
+                <div class="p-3" style="width: 80%; display: inline-block" >
+                  <h5>{{ room['summary'] }}</h5>
+                  <p class="my-1">{{ room['description'] }} </p>
                 </div>
               </div>
             </div>
           </div>
           <div v-if="section === 'reservation'" key="2">
             <h2>Reservations</h2>
-            <div v-if="reservations" v-for="reservation in reservations" class="col-lg px-1 py-2">
-              <div class="reservation-container p-3" data-toggle="modal" :data-target="'#reservationDialog' + index">
+            <div v-if="reservations" v-for="(reservation, index) in reservations" class="col-lg px-1 py-2">
+              <div class="reservation-container p-3" style="cursor: pointer"
+                   data-toggle="modal" :data-target="'#reservationDialog' + index">
                 <h5>From {{ reservation['from'] }} To {{ reservation['until'] }}</h5>
                 <p class="my-1">Client: {{ reservation['client'] }} </p>
                 <p class="my-1">Listing: {{ reservation['room'] }}</p>
@@ -86,14 +82,14 @@
                 section: "listing",
                 reservationLoading: false,
                 roomLoading: false,
-                isPrivate: false,
+                isPrivate: true,
+                reservations: []
             }
         },
 
         computed: mapGetters({
             reservationDeletedItem: 'reservation/del/deleted',
             reservationError: 'reservation/list/error',
-            reservations: 'reservation/list/items',
             reservationsIsLoading: 'reservation/list/isLoading',
             roomDeletedItem: 'room/del/deleted',
             roomError: 'room/list/error',
@@ -102,17 +98,24 @@
         }),
 
         created() {
-            if (this.$store.getters["security/getInformation"].owner_id != this.$route.params.id){
-                this.isPrivate = 0;
-            }else{
-                this.isPrivate = 1;
-            }
             this.roomLoading = true;
-            this.$store.dispatch('room/list/default', {owners: "/api/owners/" + this.$route.params.id}).then(() => {});
+            this.$store.dispatch('room/list/default', {owner: "/api/owners/" + this.$route.params.id}).then(() => {
+                for (var i = 0; i < this.rooms.length; i++) {
+                  let room = this.rooms[i];
+                  this.$store.dispatch('room/show/retrieve', "/api/rooms/" + room.id).then((room) => {
+                      for (var j = 0; j < room.reservations.length; j++) {
+                          let reservation = room.reservations[j];
+                          this.$store.dispatch('reservation/show/retrieve', reservation).then((data) => {
+                              this.reservations.push(data);
+                          });
+                      }
+                  });
+                }
+            });
             this.roomLoading = false;
             if (this.isPrivate) {
                 this.reservationLoading = true;
-                this.$store.dispatch('reservation/list/default', {owners: "/api/owners/" + this.$route.params.id}).then(() => {});
+
                 this.reservationLoading = false;
             }
 

@@ -21,7 +21,7 @@
                 <p>Message: <small>{{reservation['message']}}</small></p>
               </div>
             </li>
-            <li v-if="owner" class="list-group-item d-flex justify-content-between align-items-center">
+            <li v-if="owner && owner.id !== $store.getters['security/getInformation'].owner_id" class="list-group-item d-flex justify-content-between align-items-center">
               <div class="row pl-3 w-100">
                 <div class="col p-0">
                   <p>Owner: <small>{{owner['firstname']}} {{owner['lastname']}}</small></p>
@@ -31,17 +31,26 @@
                 </div>
               </div>
             </li>
-            <li v-if="client" class="list-group-item d-flex justify-content-between align-items-center">
+            <li v-if="client && owner && owner.id === $store.getters['security/getInformation'].owner_id" class="list-group-item d-flex justify-content-between align-items-center">
               <div class="row pl-3 w-100">
                 <div class="col p-0">
                   <p>Client: <small>{{client['firstname']}} {{client['lastname']}}</small></p>
                 </div>
                 <div class="col p-0 text-right">
-                  <button class="btn btn-secondary btn-sm" @click="ToClient">See Client</button>
+                  <button class="btn btn-secondary btn-sm" @click="ToClient(client)">See Client</button>
                 </div>
               </div>
             </li>
-
+            <li v-if="occupants" v-for="occupant in occupants" class="list-group-item d-flex justify-content-between align-items-center">
+              <div class="row pl-3 w-100">
+                <div class="col p-0">
+                  <p>Occupant: <small>{{occupant['firstname']}} {{occupant['lastname']}}</small></p>
+                </div>
+                <div class="col p-0 text-right">
+                  <button class="btn btn-secondary btn-sm" @click="ToClient(occupant)">See Occupant</button>
+                </div>
+              </div>
+            </li>
             <li v-if="room" class="list-group-item d-flex justify-content-between align-items-center">
               <div class="row pl-3 w-100">
                 <div class="col p-0">
@@ -55,26 +64,23 @@
           </ul>
         </div>
         <div v-if="mode === 'client'" key="2">
-          <h3 class="text-center py-2">{{client['firstname']}} {{client['lastname']}}</h3>
+          <h3 class="text-center py-2">{{currentClient['firstname']}} {{currentClient['lastname']}}</h3>
           <ul class="list-group">
-            <li v-if="this.birthdate" class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Age: <small>{{this.birthdate}} Years Old</small></p>
+            <li v-if="currentClient.birthdate" class="list-group-item d-flex justify-content-between align-items-center">
+              <p>Age: <small>{{currentClient.birthdate}} Years Old</small></p>
             </li>
-            <li v-if="clientUser['email']" class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Email: <small>{{clientUser['email']}}</small></p>
+            <li v-if="owner['address']" class="list-group-item d-flex justify-content-between align-items-center">
+              <p>Address: <small>{{currentClient['address']}}</small></p>
             </li>
-            <li v-if="client['telephone']" class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Telephone: <small>{{client['telephone']}}</small></p>
+            <li v-if="owner['telephone']" class="list-group-item d-flex justify-content-between align-items-center">
+              <p>Telephone: <small>{{currentClient['telephone']}}</small></p>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <button class="btn btn-secondary btn-sm" @click="ToReservation">Back to reservation</button>
             </li>
           </ul>
         </div>
-        <div v-if="mode === 'room'" key="3">
-          <room-template :room="room" :embedded="true" :back="ToReservation"></room-template>
-        </div>
-        <div v-if="mode ==='owner'" key="4">
+        <div v-else-if="mode ==='owner'" key="4">
           <h3 class="text-center py-2">{{owner['firstname']}} {{owner['lastname']}}</h3>
 
           <ul class="list-group">
@@ -91,6 +97,9 @@
               <button class="btn btn-secondary btn-sm" @click="ToReservation">Back to reservation</button>
             </li>
           </ul>
+        </div>
+        <div v-if="mode === 'room'" key="3">
+          <room-template :room="room" :embedded="true" :back="ToReservation"></room-template>
         </div>
       </transition>
     </div>
@@ -118,7 +127,8 @@
                 user: null,
                 room: null,
                 owner: null,
-                client: null
+                client: null,
+                occupants: []
             }
         },
 
@@ -147,25 +157,34 @@
                             let ageDate = new Date(ageDifMs); // miliseconds from epoch
                             that.owner.birthdate = Math.abs(ageDate.getUTCFullYear() - 1970);
                         }
-
-                        that.$store.dispatch('client/show/retrieve', that.reservation['client'][0]).then((client) => {
-                            that.client = client;
-                            if (that.isPrivate) {
-                                that.$store.dispatch('user/show/retrieve', this.client["user"]);
-                            }
-                            if (this.client["birthdate"]) {
-                                let ageDifMs = Date.now() - new Date(this.client["birthdate"]);
-                                let ageDate = new Date(ageDifMs); // miliseconds from epoch
-                                that.birthdate = Math.abs(ageDate.getUTCFullYear() - 1970);
-                            }
-                            that.clientUser = this.user;
-                        });
-
                         that.$store.dispatch('user/show/retrieve', owner["user"]).then((user) => {
 
                         });
                     });
                 });
+                this.$store.dispatch('client/show/retrieve', this.reservation['client']).then((client) => {
+                    that.client = client;
+                    if (that.isPrivate) {
+                        that.$store.dispatch('user/show/retrieve', this.client["user"]);
+                    }
+                    if (this.client["birthdate"]) {
+                        let ageDifMs = Date.now() - new Date(this.client["birthdate"]);
+                        let ageDate = new Date(ageDifMs); // miliseconds from epoch
+                        that.birthdate = Math.abs(ageDate.getUTCFullYear() - 1970);
+                    }
+                    that.clientUser = this.user;
+                });
+
+                for (var i = 0; i < this.reservation.occupants.length; i++) {
+                    this.$store.dispatch('client/show/retrieve', this.reservation.occupants[i]).then((client) => {
+                        if (client["birthdate"]) {
+                            let ageDifMs = Date.now() - new Date(client["birthdate"]);
+                            let ageDate = new Date(ageDifMs); // miliseconds from epoch
+                            client.birthdate = Math.abs(ageDate.getUTCFullYear() - 1970);
+                        }
+                        that.occupants.push(client);
+                    });
+                }
             }
         },
 
@@ -176,8 +195,9 @@
             ToReservation() {
                 this.mode = 'reservation';
             },
-            ToClient() {
+            ToClient(clientObject) {
                 this.mode = 'client';
+                this.currentClient = clientObject;
             },
             ToOwner() {
                 this.mode = 'owner';
