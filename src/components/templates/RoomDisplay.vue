@@ -36,16 +36,16 @@
                 default: ''
             },
             superficy: {
-                type: String,
-                default: ''
+                type: Number,
+                default: 0
             },
             capacity: {
-                type: String,
-                default: ''
+                type: Number,
+                default: 0
             },
             price: {
-                type: String,
-                default: ''
+                type: Number,
+                default: 0
             },
         }
     }
