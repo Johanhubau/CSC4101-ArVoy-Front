@@ -134,7 +134,6 @@
             this.isUserLoading = true;
             this.isReservationLoading = true;
             this.isRegionLoading = true;
-
             this.$store.dispatch('owner/list/default').then(() => {
                 that.ownerNb = that.owners.length;
                 if (that.ownerNb !== 0) {
