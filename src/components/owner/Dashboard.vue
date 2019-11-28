@@ -18,7 +18,7 @@
     <div v-if="reservations" v-for="reservation in reservations" class="modal fade" :id="'reservationDialog' + index" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <reservation-template></reservation-template>
+          <reservation-template :id="reservation['id']"></reservation-template>
         </div>
       </div>
     </div>
@@ -60,6 +60,12 @@
                 <h5>From {{ reservation['from'] }} To {{ reservation['until'] }}</h5>
                 <p class="my-1">Client: {{ reservation['client'] }} </p>
                 <p class="my-1">Listing: {{reservation ['room'] }}</p>
+                <div class="form-group">
+                  <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="validated" @click="validate(reservation)" v-model="reservation['validated']" checked="">
+                    <label class="custom-control-label" for="validated">Validate</label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -120,8 +126,8 @@
             ToReservations() {
                 this.section = "reservation"
             },
-            ShowReservations(reservationId) {
-                this.section = "listing"
+            validate(reservation) {
+                //TODO validate the reservation
             }
         }
     }
