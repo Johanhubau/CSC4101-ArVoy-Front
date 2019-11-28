@@ -104,6 +104,7 @@
               Now tell us about you and we're good to go!
             </h3>
             <form>
+              <h5 class="py-3">So... This is you</h5>
               <div class="form-group">
                 <label for="firstName">First Name</label>
                 <input type="text" class="form-control" id="firstName" placeholder="Enter First name"
@@ -149,6 +150,31 @@
                 <small id="countryCodeHelp" class="form-text text-muted">If you don't know your country code you can
                   find it <a href="https://en.wikipedia.org/wiki/ISO_3166-1" target="_blank">here</a></small>
               </div>
+              <div v-for="index in this.occupants-1" class="pb-5">
+                <h5 class="py-3">Occupant {{index+1}}:</h5>
+                <div class="form-group">
+                  <label :for="'firstName' + index">First Name</label>
+                  <input type="text" class="form-control" :id="'firstName' + index" placeholder="Enter First name"
+                         v-model="occFirstName[index]">
+                </div>
+                <div class="form-group">
+                  <label :for="'lastName' + index">Last Name</label>
+                  <input type="text" class="form-control" :id="'lastName' + index" placeholder="Enter Last name"
+                         v-model="occLastName[index]">
+                </div>
+                <div class="form-group">
+                  <label :for="'birthdate' + index">Birthdate</label>
+                  <input type="text" class="form-control" :id="'birthdate' + index"
+                         placeholder="Enter birthdate"
+                         v-model="occBirthdate[index]">
+                </div>
+                <div class="form-group">
+                  <label :for="'tel' + index">Telephone {{ occTelephone[index] }}</label>
+                  <input type="text" class="form-control" :id="'tel' + index"
+                         placeholder="Enter telephone"
+                         v-model="occTelephone[index]">
+                </div>
+              </div>
               <button class="btn btn-primary" @click="submit()">Submit</button>
             </form>
           </div>
@@ -184,7 +210,11 @@
                 occupants: 0,
                 countryCode: '',
                 start: null,
-                until: null
+                until: null,
+                occFirstName: [],
+                occLastName: [],
+                occBirthdate: [],
+                occTelephone: []
             }
         },
 
@@ -231,6 +261,12 @@
             },
             ToRegion() {
                 let that = this;
+                for (var n = 0; n < this.occupants -1; n += 1) {
+                    this.occFirstName.push('');
+                    this.occLastName.push('');
+                    this.occBirthdate.push('');
+                    this.occTelephone.push('');
+                }
                 console.log(this.start);
                 this.$store.dispatch('region/list/default', {
                         'rooms.capacity[gte]': this.occupants,
@@ -259,7 +295,7 @@
                     'unavailablePeriods[between_until]': this.until.toLocaleDateString("en-EN"),
                     'reservations[between_start]': this.start.toLocaleDateString("en-EN"),
                     'reservations[between_until]': this.until.toLocaleDateString("en-EN"),
-                    }).then(() => {
+                }).then(() => {
                     that.groupedRooms = that.chunk(that.rooms, 3);
                 });
                 this.chosenRoom = -1;
