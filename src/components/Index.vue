@@ -95,7 +95,7 @@
             }
         },
         created() {
-            if (this.$store.getters["security/isAuthenticated"])
+            if (this.$store.getters["security/isAuthenticated"] && this.$store.getters["security/getInformation"].client_id != null)
             this.$router.push({path: '/home/' + this.$store.getters["security/getInformation"].client_id})
         },
         methods: {

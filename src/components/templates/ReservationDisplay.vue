@@ -21,7 +21,7 @@
                 <p>Message: <small>{{reservation['message']}}</small></p>
               </div>
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
+            <li v-if="owner" class="list-group-item d-flex justify-content-between align-items-center">
               <div class="row pl-3 w-100">
                 <div class="col p-0">
                   <p>Owner: <small>{{owner['firstname']}} {{owner['lastname']}}</small></p>
@@ -31,7 +31,7 @@
                 </div>
               </div>
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
+            <li v-if="client" class="list-group-item d-flex justify-content-between align-items-center">
               <div class="row pl-3 w-100">
                 <div class="col p-0">
                   <p>Client: <small>{{client['firstname']}} {{client['lastname']}}</small></p>
@@ -42,7 +42,7 @@
               </div>
             </li>
 
-            <li class="list-group-item d-flex justify-content-between align-items-center">
+            <li v-if="room" class="list-group-item d-flex justify-content-between align-items-center">
               <div class="row pl-3 w-100">
                 <div class="col p-0">
                   <p>Room: <small>{{room['summary']}}</small></p>
@@ -72,37 +72,20 @@
           </ul>
         </div>
         <div v-if="mode === 'room'" key="3">
-          <h3 class="text-center py-2">{{room['summary']}}</h3>
-          <div class="image">
-
-          </div>
-          <ul class="list-group">
-            <li v-if="room['description']" class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Description: <small>{{room['description']}}</small></p>
-            </li>
-            <li v-if="room['superficy']" class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Superficy: <small>{{room['superficy']}}m</small></p>
-            </li>
-            <li v-if="room['capacity']" class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Capacity: <small>{{room['capacity']}} Occupants</small></p>
-            </li>
-            <li v-if="room['price']" class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Price: <small>{{room['price']}}</small></p>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <button class="btn btn-secondary btn-sm" @click="ToReservation">Back to reservation</button>
-            </li>
-          </ul>
+          <room-template :room="room" :embedded="true" :back="ToReservation"></room-template>
         </div>
         <div v-if="mode ==='owner'" key="4">
           <h3 class="text-center py-2">{{owner['firstname']}} {{owner['lastname']}}</h3>
 
           <ul class="list-group">
-            <li v-if="clientUser['email']" class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Email: <small>{{clientUser['email']}}</small></p>
+            <li v-if="owner.birthdate" class="list-group-item d-flex justify-content-between align-items-center">
+              <p>Age: <small>{{owner.birthdate}} Years Old</small></p>
             </li>
-            <li v-if="client['telephone']" class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Telephone: <small>{{client['telephone']}}</small></p>
+            <li v-if="owner['address']" class="list-group-item d-flex justify-content-between align-items-center">
+              <p>Address: <small>{{owner['address']}}</small></p>
+            </li>
+            <li v-if="owner['telephone']" class="list-group-item d-flex justify-content-between align-items-center">
+              <p>Telephone: <small>{{owner['telephone']}}</small></p>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <button class="btn btn-secondary btn-sm" @click="ToReservation">Back to reservation</button>
@@ -121,8 +104,8 @@
         name: "ReservationDisplay",
 
         props: {
-            id: {
-                type: Number
+            reservation: {
+                type: Object
             }
         },
 
@@ -132,6 +115,10 @@
                 clientUser: null,
                 ownerUser: null,
                 birthdate: null,
+                user: null,
+                room: null,
+                owner: null,
+                client: null
             }
         },
 
@@ -139,37 +126,47 @@
             deleteError: 'owner/del/error',
             error: 'owner/show/error',
             isLoading: 'owner/show/isLoading',
-            owner: 'owner/show/retrieved',
-            user: 'user/show/retrieved',
-            client: 'client/show/retrieved',
-            reservation: 'reservation/show/retrieved',
-            room: 'room/show/retrieved'
+            retrievedReservation: 'reservation/show/retrieved',
         }),
 
         created() {
             let that = this;
-            this.$store.dispatch('reservation/show/retrieve', "/api/reservations/" + this.id).then(() => {
-                that.$store.dispatch('room/show/retrieve', that.reservation['room']).then(() => {
-                    that.$store.dispatch('owner/show/retrieve', that.room['owner']).then(() => {
-                        that.$store.dispatch('user/show/retrieve', that.owner["user"]).then(() => {
-                            that.ownerUser = this.user;
-                            that.$store.dispatch('client/show/retrieve', that.reservation['client'][0]).then(() => {
-                                if (that.isPrivate) {
-                                    that.$store.dispatch('user/show/retrieve', this.client["user"]);
-                                }
-                                if (this.client["birthdate"]) {
-                                    let ageDifMs = Date.now() - new Date(this.client["birthdate"]);
-                                    let ageDate = new Date(ageDifMs); // miliseconds from epoch
-                                    that.birthdate = Math.abs(ageDate.getUTCFullYear() - 1970);
-                                }
-                                that.clientUser = this.user;
-                            });
+            if (this.reservation == null) {
+                this.id = decodeURIComponent(this.$route.params.id);
+                this.$store.dispatch('reservation/show/retrieve', "/api/reservations/" + this.id).then(() => {
+                    that.reservation = that.retrievedReservation;
+                });
+            } else {
+                this.$store.dispatch('room/show/retrieve', this.reservation['room']).then((room) => {
+                    that.room = room;
+                    that.$store.dispatch('owner/show/retrieve', room['owner']).then((owner) => {
+                        that.owner = owner;
+
+                        if (that.owner["birthdate"]) {
+                            let ageDifMs = Date.now() - new Date(that.owner["birthdate"]);
+                            let ageDate = new Date(ageDifMs); // miliseconds from epoch
+                            that.owner.birthdate = Math.abs(ageDate.getUTCFullYear() - 1970);
+                        }
+
+                        that.$store.dispatch('client/show/retrieve', that.reservation['client'][0]).then((client) => {
+                            that.client = client;
+                            if (that.isPrivate) {
+                                that.$store.dispatch('user/show/retrieve', this.client["user"]);
+                            }
+                            if (this.client["birthdate"]) {
+                                let ageDifMs = Date.now() - new Date(this.client["birthdate"]);
+                                let ageDate = new Date(ageDifMs); // miliseconds from epoch
+                                that.birthdate = Math.abs(ageDate.getUTCFullYear() - 1970);
+                            }
+                            that.clientUser = this.user;
+                        });
+
+                        that.$store.dispatch('user/show/retrieve', owner["user"]).then((user) => {
+
                         });
                     });
                 });
-            });
-
-
+            }
         },
 
         methods: {

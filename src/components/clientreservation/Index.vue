@@ -90,18 +90,8 @@
             <br>
             <div class="row" v-for='(grooms, gIndex) in groupedRooms'>
               <div class="card-deck">
-                <div v-for="room in grooms" class="card mb-3">
-                  <img class="card-img-top" v-if="room.image != null"
-                       :src="(room.image.path.indexOf('http') === -1 ? '/document/' : '') + room.image.path"
-                       alt="Card image">
-                  <h3 class="card-header">{{room.summary}}</h3>
-                  <div class="card-body">
-                    <p class="card-text">{{room.description}}</p>
-                    <p class="card-text">{{room.superficy}}</p>
-                    <p class="card-text">{{room.capacity}}</p>
-                    <p class="card-text">{{room.price}}</p>
-                  </div>
-                  <button class="btn btn-secondary card-footer" @click="ToInfo(room.id)">Choose</button>
+                <div class="card mb-3" v-for="room in grooms">
+                  <room-template :room="room" :embedded="true"></room-template>
                 </div>
               </div>
             </div>

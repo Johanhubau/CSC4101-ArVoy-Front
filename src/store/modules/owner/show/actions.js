@@ -10,7 +10,7 @@ export const retrieve = ({ commit }, id) => {
     .then((data) => {
       commit(types.OWNER_SHOW_TOGGLE_LOADING)
       commit(types.OWNER_SHOW_SET_RETRIEVED, data)
-      resolve();
+      resolve(data);
     })
     .catch((e) => {
       commit(types.OWNER_SHOW_TOGGLE_LOADING)

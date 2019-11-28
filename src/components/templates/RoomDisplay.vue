@@ -1,26 +1,28 @@
 <template>
-    <div class="room-container py-2">
+    <div v-bind:class="{'room-container py-2': !embedded}">
       <transition name="fade" mode="out-in">
         <div v-if="mode === 'room'" class="col p-3" key="1">
-          <h3 class="text-center py-2">{{name}}</h3>
-          <div class="image">
-
-          </div>
+          <h3 class="text-center py-2">{{room.summary}}</h3>
+          <img class="w-100"
+               :src="(room.image.path.indexOf('http') === -1 ? '/document/' : '') + room.image.path">
           <ul class="list-group">
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Description: <small>{{description}}</small></p>
+              <p>Description: <small>{{room.description}}</small></p>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Superficy: <small>{{superficy}}m</small></p>
+              <p>Superficy: <small>{{room.superficy}}m</small></p>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Capacity: <small>{{capacity}} Occupants</small></p>
+              <p>Capacity: <small>{{room.capacity}} Occupants</small></p>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Price: <small>{{price}}</small></p>
+              <p>Price: <small>{{room.price}}</small></p>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <button class="btn btn-sm btn-secondary" @click="ToComment">See Comments</button>
+            </li>
+            <li v-if="back != null" class="list-group-item d-flex justify-content-between align-items-center">
+              <button class="btn btn-sm btn-secondary" @click="back()">Back</button>
             </li>
           </ul>
         </div>
@@ -36,34 +38,38 @@
 </template>
 
 <script>
+    import {mapActions, mapGetters} from 'vuex'
+
     export default {
         name: "Display",
+        computed: mapGetters({
+            deleteError: 'room/del/error',
+            error: 'room/show/error',
+            isLoading: 'room/show/isLoading',
+            retrievedRoom: 'room/show/retrieved'
+        }),
         props: {
-            name: {
-                type: String,
-                default: ''
+            room: {
+                type: Object
             },
-            description: {
-                type: String,
-                default: ''
+            back: {
+                type: Function
             },
-            superficy: {
-                type: Number,
-                default: 0
-            },
-            capacity: {
-                type: Number,
-                default: 0
-            },
-            price: {
-                type: Number,
-                default: 0
-            },
+            embedded: {
+                type: Boolean
+            }
         },
         data () {
             return {
                 mode: 'room',
             }
+        },
+        created() {
+            let that = this;
+            if (this.room == null) this.id = decodeURIComponent(this.$route.params.id);
+            this.$store.dispatch('room/show/retrieve', "/api/rooms/" + this.id).then(() => {
+                that.room = that.retrievedRoom;
+            });
         },
         methods: {
             ToComment () {

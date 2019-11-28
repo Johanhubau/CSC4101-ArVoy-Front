@@ -14,17 +14,17 @@
          role="dialog" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <reservation-template :id="reservation['id']"></reservation-template>
+          <reservation-template :reservation="reservation"></reservation-template>
         </div>
       </div>
     </div>
     <div class="container p-5">
       <h2>Reservations</h2>
       <div v-for="(reservation, index) in reservations" class="col-lg px-1 py-2">
-        <div class="reservation-container p-3" data-toggle="modal" :data-target="'#reservationDialog' + index">
-          <h5>From {{ reservation['from'] }} To {{ reservation['until'] }}</h5>
-          <p class="my-1">Client: {{}} </p>
-          <p class="my-1">Listing: {{reservation.room}}</p>
+        <div class="reservation-container p-3" data-toggle="modal" :data-target="'#reservationDialog' + index" style="cursor: pointer">
+          <h5>From {{ new Date(reservation.start).toLocaleDateString("en-US") }} To {{ new Date(reservation.until).toLocaleDateString("en-US") }}</h5>
+          <p class="my-1">Message: {{reservation.message}} </p>
+          <p class="my-1">Validated: {{reservation.validated ? "yes" : "no"}}</p>
         </div>
       </div>
     </div>
