@@ -121,6 +121,7 @@
 
   .picture {
     width: 100%;
+    height: auto;
     min-height: 150px
   }
 
