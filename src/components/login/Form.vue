@@ -89,7 +89,7 @@
                 if (typeof redirect !== "undefined") {
                     this.$router.push({path: redirect});
                 } else {
-                    this.$router.push({path: "/"});
+                    this.$router.push({path: "/home"});
                 }
             }
         },

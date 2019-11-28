@@ -13,5 +13,5 @@ export default [
   { name: 'ClientShow', path: '/admin/clients/show/:id', component: ClientShow, meta: { requiresAuth: true, requiresRole: "ROLE_CLIENT"} },
   { name: 'ClientRegister', path: '/register', component: ClientRegister},
   { name: 'ClientDisplay', path: '/clients/:id', component: ClientDisplay},
-  { name: 'ClientDashboard', path: '/home/:id', component: ClientDashboard}
+  { name: 'ClientDashboard', path: '/home/:id', component: ClientDashboard, meta: { requiresAuth: true, requiresRole: "ROLE_CLIENT"} }
 ]

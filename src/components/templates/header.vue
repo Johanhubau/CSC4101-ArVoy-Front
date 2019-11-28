@@ -1,11 +1,13 @@
 <template>
   <div>
-    <nav class="px-5 py-3 navbar navbar-expand-lg navbar-dark bg-primary" style="z-index: 2;">
+    <nav class="px-5 py-3 navbar navbar-expand-lg navbar-dark bg-primary" v-bind:class=" { 'navbarOpen': show }" style="z-index: 2;">
       <router-link class="navbar-brand" to="/">RVoy</router-link>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+              v-on:click="toggleNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav"
+           v-bind:class="{ show: show }">
         <ul class="navbar-nav">
           <li class="nav-item">
             <router-link class="nav-link" to="/reserve">Make a reservation</router-link>
@@ -23,6 +25,19 @@
 <script>
     export default {
         name: "App",
+        props: {
+            msg: String
+        },
+        data() {
+            return {
+                show: true
+            }
+        },
+        methods: {
+            toggleNavbar() {
+                this.show = !this.show;
+            }
+        },
         computed: {
             getDisplayName() {
                 if (this.$store.getters["security/hasInformation"])

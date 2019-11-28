@@ -57,7 +57,7 @@
 
         created() {
             this.reservationLoading = true;
-            this.$store.dispatch('reservation/list/default', {owners: "/api/owners/" + this.$route.params.id}).then(() => {
+            this.$store.dispatch('reservation/list/default').then(() => {
             });
             this.reservationLoading = false;
         },

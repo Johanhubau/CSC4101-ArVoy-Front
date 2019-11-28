@@ -53,7 +53,6 @@ router.beforeEach(async (to, from, next) => {
       try {
         store.dispatch("security/onRefresh", await SecurityAPI.checkLogin());
       } catch (e) {
-        console.log(from);
         if (e instanceof NeedsLoginError && from.path !== "/login") await router.push({path: "/login"});
       }
     }

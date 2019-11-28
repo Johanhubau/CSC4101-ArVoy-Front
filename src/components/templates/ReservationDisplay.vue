@@ -149,11 +149,11 @@
         created() {
             let that = this;
             this.$store.dispatch('reservation/show/retrieve', "/api/reservations/" + this.id).then(() => {
-                that.$store.dispatch('room/show/retrieve', reservation['room']).then(() => {
-                    that.$store.dispatch('owner/show/retrieve', room['owner']).then(() => {
+                that.$store.dispatch('room/show/retrieve', that.reservation['room']).then(() => {
+                    that.$store.dispatch('owner/show/retrieve', that.room['owner']).then(() => {
                         that.$store.dispatch('user/show/retrieve', that.owner["user"]).then(() => {
                             that.ownerUser = this.user;
-                            that.$store.dispatch('client/show/retrieve', reservation['client'][0]).then(() => {
+                            that.$store.dispatch('client/show/retrieve', that.reservation['client'][0]).then(() => {
                                 if (that.isPrivate) {
                                     that.$store.dispatch('user/show/retrieve', this.client["user"]);
                                 }

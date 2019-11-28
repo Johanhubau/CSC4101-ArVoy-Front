@@ -63,7 +63,7 @@
               <button class="btn btn-primary w-100" @click="ToRegion()">Continue</button>
             </form>
           </div>
-          <div v-if="currentStep === 1" class="w-100" key="1">
+          <div v-else-if="currentStep === 1" class="w-100" key="1">
             <h3>
               Ready? Let's start by choosing a region.
             </h3>

@@ -7,5 +7,5 @@ export default [
   { name: 'Index', path: '/', component: Index },
   { name: '404', path: '*', component: NotFound },
   { name: '403', path: '/403', component: PermissionDenied },
-  { name: 'Home', path: '/home', component: Home },
+  { name: 'Home', path: '/home', component: Home, meta: { requiresAuth: true, requiresRole: "ROLE_CLIENT"}  },
 ]

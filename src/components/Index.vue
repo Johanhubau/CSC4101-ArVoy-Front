@@ -94,7 +94,10 @@
 
             }
         },
-
+        created() {
+            if (this.$store.getters["security/isAuthenticated"])
+            this.$router.push({path: '/home/' + this.$store.getters["security/getInformation"].client_id})
+        },
         methods: {
             resetForm() {
                 this.firstName = "";
@@ -105,7 +108,12 @@
                 this.c_password = "";
             },
             submit() {
-
+                this.$store.dispatch('client/create', {
+                    firstName: this.firstName,
+                    firstName: this.firstName,
+                }).then(() => {
+                    that.groupedRooms = that.chunk(that.rooms, 3);
+                });
             },
         }
     }
