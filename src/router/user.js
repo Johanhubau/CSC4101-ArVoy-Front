@@ -9,5 +9,5 @@ export default [
   { name: 'UserCreate', path: '/admin/users/create', component: UserCreate, meta: { requiresAuth: true, requiresRole: "ROLE_ADMIN"} },
   { name: 'UserUpdate', path: '/admin/users/edit/:id', component: UserUpdate, meta: { requiresAuth: true, requiresRole: "ROLE_ADMIN"} },
   { name: 'UserShow', path: '/admin/users/show/:id', component: UserShow, meta: { requiresAuth: true, requiresRole: "ROLE_ADMIN"} },
-  { name: 'UserIndex', path: '/users/', component: Index }
+  // { name: 'UserIndex', path: '/users/', component: Index }
 ]

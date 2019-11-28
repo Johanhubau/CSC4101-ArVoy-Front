@@ -6,10 +6,10 @@ import RoomAdd from '../components/room/Add'
 import RoomDisplay from '../components/templates/RoomDisplay'
 
 export default [
-  { name: 'RoomList', path: '/admin/rooms/', component: RoomList },
-  { name: 'RoomCreate', path: '/admin/rooms/create', component: RoomCreate },
-  { name: 'RoomUpdate', path: '/admin/rooms/edit/:id', component: RoomUpdate },
-  { name: 'RoomShow', path: '/admin/rooms/show/:id', component: RoomShow },
-  { name: 'RoomAdd', path: '/owners/rooms/add', component: RoomAdd },
+  { name: 'RoomList', path: '/admin/rooms/', component: RoomList, meta: { requiresAuth: true, requiresRole: "ROLE_ADMIN"}  },
+  { name: 'RoomCreate', path: '/admin/rooms/create', component: RoomCreate, meta: { requiresAuth: true, requiresRole: "ROLE_ADMIN"}  },
+  { name: 'RoomUpdate', path: '/admin/rooms/edit/:id', component: RoomUpdate, meta: { requiresAuth: true, requiresRole: "ROLE_ADMIN"}  },
+  { name: 'RoomShow', path: '/admin/rooms/show/:id', component: RoomShow, meta: { requiresAuth: true, requiresRole: "ROLE_ADMIN"}  },
+  { name: 'RoomAdd', path: '/owners/:id/rooms/add', component: RoomAdd, meta: { requiresAuth: true, requiresRole: "ROLE_OWNER"}  },
   { name: 'RoomDisplay', path: '/rooms/:id', component: RoomDisplay }
 ]

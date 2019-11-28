@@ -6,10 +6,10 @@ import Dashboard from '../components/owner/Dashboard'
 import Register from '../components/owner/Register'
 
 export default [
-  { name: 'OwnerList', path: '/admin/owners/', component: OwnerList },
-  { name: 'OwnerCreate', path: '/admin/owners/create', component: OwnerCreate },
-  { name: 'OwnerUpdate', path: '/admin/owners/edit/:id', component: OwnerUpdate },
-  { name: 'OwnerShow', path: '/admin/owners/show/:id', component: OwnerShow },
-  { name: 'OwnerDashboard', path: '/owners/:id', component: Dashboard },
+  { name: 'OwnerList', path: '/admin/owners/', component: OwnerList, meta: { requiresAuth: true, requiresRole: "ROLE_ADMIN"}  },
+  { name: 'OwnerCreate', path: '/admin/owners/create', component: OwnerCreate, meta: { requiresAuth: true, requiresRole: "ROLE_ADMIN"}  },
+  { name: 'OwnerUpdate', path: '/admin/owners/edit/:id', component: OwnerUpdate, meta: { requiresAuth: true, requiresRole: "ROLE_ADMIN"}  },
+  { name: 'OwnerShow', path: '/admin/owners/show/:id', component: OwnerShow, meta: { requiresAuth: true, requiresRole: "ROLE_ADMIN"}  },
+  { name: 'OwnerDashboard', path: '/owners/:id', component: Dashboard, meta: { requiresAuth: true, requiresRole: "ROLE_CLIENT"}  },
   { name: 'OwnerRegister', path: '/register/owner', component: Register }
 ]
