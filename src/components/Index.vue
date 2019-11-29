@@ -98,7 +98,7 @@
             if (this.$store.getters["security/isAuthenticated"] && this.$store.getters["security/getInformation"].client_id != null){
                 this.$router.push({path: '/home/' + this.$store.getters["security/getInformation"].client_id})
             }else if(this.$store.getters["security/isAuthenticated"] && this.$store.getters["security/getInformation"].owner_id != null) {
-                this.$router.push({path: '/owners/' + this.$store.getters["security/getInformation"].client_id})
+                this.$router.push({path: '/owners/' + this.$store.getters["security/getInformation"].owner_id})
             }else if(this.$store.getters["security/isAuthenticated"] && this.$store.getters["security/getInformation"].staff_id != null) {
                 this.$router.push({path: '/admin/'})
             }

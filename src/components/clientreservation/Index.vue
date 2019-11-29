@@ -91,7 +91,7 @@
             <div class="row" v-for='(grooms, gIndex) in groupedRooms'>
               <div class="card-deck">
                 <div class="card mb-3" v-for="room in grooms">
-                  <room-template :room="room" :embedded="true"></room-template>
+                  <room-template :room="room" :embedded="true" :action="ToInfo" :actionText="'Choose'"></room-template>
                 </div>
               </div>
             </div>
@@ -103,16 +103,22 @@
             <h3 v-else>
               Now tell us about you and we're good to go!
             </h3>
-            <form>
+            <form @submit.prevent="submit">
               <h5 class="py-3">So... This is you</h5>
               <div class="form-group">
                 <label for="firstName">First Name</label>
                 <input type="text" class="form-control" id="firstName" placeholder="Enter First name"
                        v-model="firstName">
+                <div
+                  v-if="isInvalid('firstname')"
+                  class="invalid-feedback">{{ violations.firstname }}</div>
               </div>
               <div class="form-group">
                 <label for="lastName">Last Name</label>
                 <input type="text" class="form-control" id="lastName" placeholder="Enter Last name" v-model="lastName">
+                <div
+                  v-if="isInvalid('lastname')"
+                  class="invalid-feedback">{{ violations.lastname }}</div>
               </div>
               <div class="form-group">
                 <label for="birthdate">Birthdate</label>
@@ -120,6 +126,9 @@
                        placeholder="Enter birthdate"
                        v-model="birthdate">
                 <small id="birthdateHelp" class="form-text text-muted">Please input as DD/MM/YYYY</small>
+                <div
+                  v-if="isInvalid('birthdate')"
+                  class="invalid-feedback">{{ violations.birthdate }}</div>
               </div>
               <div class="form-group">
                 <label for="email">Email address</label>
@@ -128,19 +137,29 @@
                        v-model="email">
                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
                   else.</small>
+                <div
+                  v-if="isInvalid('email')"
+                  class="invalid-feedback">{{ violations.email }}</div>
               </div>
               <div class="form-group">
                 <label for="telephone">Telephone</label>
-                <input type="text" class="form-control" id="telephone" aria-describedby="telHelp"
+                <input type="text" id="telephone" aria-describedby="telHelp"
+                       :class="['form-control', isInvalid('telephone') ? 'is-invalid' : '']"
                        placeholder="Enter telephone number"
                        v-model="telephone">
                 <small id="telHelp" class="form-text text-muted">Your telephone number we'll be given to the owner of
                   the listing your trying to rent.</small>
+                <div
+                  v-if="isInvalid('telephone')"
+                  class="invalid-feedback">{{ violations.telephone }}</div>
               </div>
               <div class="form-group">
                 <label for="address">Address</label>
                 <input type="text" class="form-control" id="address" placeholder="Enter address"
                        v-model="address">
+                <div
+                  v-if="isInvalid('address')"
+                  class="invalid-feedback">{{ violations.address }}</div>
               </div>
               <div class="form-group">
                 <label for="countryCode">Country</label>
@@ -149,8 +168,11 @@
                        v-model="countryCode">
                 <small id="countryCodeHelp" class="form-text text-muted">If you don't know your country code you can
                   find it <a href="https://en.wikipedia.org/wiki/ISO_3166-1" target="_blank">here</a></small>
+                <div
+                  v-if="isInvalid('country')"
+                  class="invalid-feedback">{{ violations.country }}</div>
               </div>
-              <div v-for="index in this.occupants-1" class="pb-5">
+              <div v-for="index in occupants-1" class="pb-5">
                 <h5 class="py-3">Occupant {{index+1}}:</h5>
                 <div class="form-group">
                   <label :for="'firstName' + index">First Name</label>
@@ -174,8 +196,14 @@
                          placeholder="Enter telephone"
                          v-model="occTelephone[index]">
                 </div>
+                <div class="form-group">
+                  <label :for="'address' + index">Address {{ occAddress[index] }}</label>
+                  <input type="text" class="form-control" :id="'address' + index"
+                         placeholder="Enter address"
+                         v-model="occAddress[index]">
+                </div>
               </div>
-              <button class="btn btn-primary" @click="submit()">Submit</button>
+              <button class="btn btn-primary">Submit</button>
             </form>
           </div>
         </transition>
@@ -187,6 +215,7 @@
 <script>
     import {mapActions, mapGetters} from 'vuex'
     import Datepicker from "vuejs-datepicker";
+    import SecurityAPI from "../../api/security";
 
     export default {
         name: "index",
@@ -214,7 +243,8 @@
                 occFirstName: [],
                 occLastName: [],
                 occBirthdate: [],
-                occTelephone: []
+                occTelephone: [],
+                occAddress: []
             }
         },
 
@@ -228,6 +258,9 @@
             hasInformation() {
                 return this.$store.getters["security/hasInformation"];
             },
+            violations () {
+                return this.errors || {}
+            },
             ...mapGetters({
                 regionError: 'region/list/error',
                 regions: 'region/list/items',
@@ -236,7 +269,8 @@
                 roomError: 'room/list/error',
                 rooms: 'room/list/items',
                 roomLoading: 'room/list/isLoading',
-                roomView: 'room/list/view'
+                roomView: 'room/list/view',
+                errors: 'client/create/violations'
             })
         },
 
@@ -246,6 +280,9 @@
         },
 
         methods: {
+            isInvalid (key) {
+                return Object.keys(this.violations).length > 0 && this.violations[key]
+            },
             chunk: function (arr, size) {
                 var newArr = [];
                 for (var i = 0; i < arr.length; i += size) {
@@ -266,6 +303,7 @@
                     this.occLastName.push('');
                     this.occBirthdate.push('');
                     this.occTelephone.push('');
+                    this.occAddress.push('');
                 }
                 console.log(this.start);
                 this.$store.dispatch('region/list/default', {
@@ -321,7 +359,46 @@
                 }
             },
             submit() {
-
+                let that = this;
+                if (this.$store.getters["security/getInformation"].client_id == null) {
+                    this.$store.dispatch("client/create/create", {
+                        firstname: this.firstName,
+                        lastname: this.lastName,
+                        telephone: this.telephone,
+                        address: this.address,
+                        birthdate: this.birthdate,
+                        user: "api/users/" + this.$store.getters["security/getInformation"].user_id,
+                    }).then(async (client) => {
+                        /*await this.$store.dispatch("user/update/update", {
+                           "@id": "api/users/" + this.$store.getters["security/getInformation"].user_id,
+                            "client": "api/users/" + client.id,
+                        });*/
+                        var occupantsId = [];
+                        for (var i = 0; i < that.occupants - 1; i++) {
+                            await that.$store.dispatch("client/create/create", {
+                                firstname: that.occFirstName[i+1],
+                                lastname: that.occLastName[i+1],
+                                telephone: that.occTelephone[i+1],
+                                address: that.occAddress[i+1],
+                                birthdate: that.occBirthdate[i+1]
+                            }).then((occupant) => {
+                                occupantsId.push("api/clients/" + occupant.id);
+                            })
+                        }
+                        await that.$store.dispatch("reservation/create/create", {
+                            client: "api/clients/" + client.id,
+                            occupants: occupantsId,
+                            room: "api/rooms/" + that.chosenRoom,
+                            start: that.start,
+                            until: that.until,
+                            validated: false,
+                            message: ""
+                        }).then(async (reservation) => {""
+                            await this.$store.dispatch("security/onRefresh", await SecurityAPI.checkLogin());
+                            this.$router.push({path: "/home/"})
+                        })
+                    })
+                }
             },
         }
     }

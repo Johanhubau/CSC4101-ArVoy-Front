@@ -1,33 +1,33 @@
 <template>
     <div v-bind:class="{'room-container py-2': !embedded}">
       <transition name="fade" mode="out-in">
-        <div v-if="mode === 'room' && retrievedRoom" class="col p-3" key="1">
-          <h3 class="text-center py-2">{{retrievedRoom.summary}}</h3>
+        <div v-if="mode === 'room' && theRoom" class="col p-3" key="1">
+          <h3 class="text-center py-2">{{theRoom.summary}}</h3>
           <img class="w-100"
-               :src="(retrievedRoom.image.path.indexOf('http') === -1 ? '/document/' : '') + retrievedRoom.image.path">
+               :src="(theRoom.image.path.indexOf('http') === -1 ? '/document/' : '') + theRoom.image.path">
           <ul class="list-group">
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Description: <small>{{retrievedRoom.description}}</small></p>
+              <p>Description: <small>{{theRoom.description}}</small></p>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Superficy: <small>{{retrievedRoom.superficy}}m</small></p>
+              <p>Superficy: <small>{{theRoom.superficy}}m</small></p>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Capacity: <small>{{retrievedRoom.capacity}} Occupants</small></p>
+              <p>Capacity: <small>{{theRoom.capacity}} Occupants</small></p>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              <p>Price: <small>{{retrievedRoom.price}}</small></p>
+              <p>Price: <small>{{theRoom.price}}</small></p>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <button class="btn btn-sm btn-secondary" @click="ToComment">See Comments</button>
             </li>
-            <li v-if="back != null" class="list-group-item d-flex justify-content-between align-items-center">
-              <button class="btn btn-sm btn-secondary" @click="back()">Back</button>
+            <li v-if="action != null" class="list-group-item d-flex justify-content-between align-items-center">
+              <button class="btn btn-sm btn-secondary" @click="action(theRoom.id)">{{actionText}}</button>
             </li>
           </ul>
         </div>
         <div v-if="mode ==='comment'" class="col p-3" key="2">
-          <h3 class="text-center py-2">{{retrievedRoom.summary}}</h3>
+          <h3 class="text-center py-2">{{theRoom.summary}}</h3>
           <ul class="p-0">
             <li v-if="commentsData" v-for="comment in commentsData" class="list-group-item d-flex justify-content-between align-items-center">
               <div class="row pl-3 w-100">
@@ -39,6 +39,7 @@
                 </div>
               </div>
             </li>
+            <p v-else>There are no comments</p>
           </ul>
           <button class="btn btn-sm btn-secondary" @click="ToRoom">Back</button>
         </div>
@@ -61,8 +62,11 @@
             room: {
                 type: Object
             },
-            back: {
+            action: {
                 type: Function
+            },
+            actionText: {
+                type: String
             },
             embedded: {
                 type: Boolean
@@ -71,17 +75,19 @@
         data () {
             return {
                 mode: 'room',
-                commentsData: []
+                commentsData: [],
+                theRoom: null
             }
         },
         created() {
             let that = this;
-            if (this.room == null) this.id = decodeURIComponent(this.$route.params.id);
+            if (this.room == null) this.room = {id: decodeURIComponent(this.$route.params.id)};
+            else this.theRoom = this.room;
 
             this.$store.dispatch('room/show/retrieve', "/api/rooms/" + this.room.id).then((data) => {
-                for (var i = 0; i < that.room.comments.length; i++) {
-
-                    this.$store.dispatch('comment/show/retrieve', that.room.comments[i]).then((comment) => {
+                if (that.theRoom == null) that.theRoom = data;
+                for (var i = 0; i < data.comments.length; i++) {
+                    this.$store.dispatch('comment/show/retrieve', data.comments[i]).then((comment) => {
                         that.commentsData.push(comment);
                     });
                 }

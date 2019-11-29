@@ -99,7 +99,7 @@
           </ul>
         </div>
         <div v-if="mode === 'room'" key="3">
-          <room-template :room="room" :embedded="true" :back="ToReservation"></room-template>
+          <room-template :room="room" :embedded="true" :action="ToReservation" :actionText="'Back'"></room-template>
         </div>
       </transition>
     </div>
